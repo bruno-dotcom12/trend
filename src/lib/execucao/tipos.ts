@@ -6,8 +6,9 @@ export type PreVenda = {
   pecaId: string;
   titulo: string;
   categoria: string;
-  meta: number; // reservas necessárias para validar a compra do lote
-  interessadosBase: number; // reservas já existentes (demonstração)
+  meta: number; // lojistas necessárias para validar a demanda e liberar o lote
+  interessadosBase: number; // lojistas que já reservaram (demonstração)
+  lojasBase: string[]; // nomes de lojistas já participantes (demonstração)
   prazo: string; // texto curto (ex.: "fecha em 5 dias")
 };
 

@@ -1,14 +1,15 @@
 "use client";
 
-import { Check, Users } from "lucide-react";
+import { Check, Store } from "lucide-react";
 
 import { BarraProgresso } from "@/components/barra-progresso";
 import { Button } from "@/components/ui/button";
 import { alternarInteresse } from "@/lib/execucao/store";
 import type { PreVenda } from "@/lib/execucao/tipos";
 
-// Pré-venda: valida a demanda antes de pagar o lote. "Registrar interesse"
-// soma a minha reserva (mock) e move a barra rumo à meta.
+// Pré-venda: outras lojistas reservam a peça antes de pagar o lote. Cada reserva
+// é uma lojista apostando — prova de demanda. "Registrar interesse" soma a minha
+// reserva (mock), move a barra rumo à meta e me coloca entre as participantes.
 export function PreVendaCard({
   preVenda,
   participo,
@@ -41,8 +42,8 @@ export function PreVendaCard({
       <div className="mt-5">
         <div className="flex items-center justify-between font-ui text-sm">
           <span className="flex items-center gap-1.5 text-muted-foreground">
-            <Users className="size-4" aria-hidden />
-            {interessados} de {preVenda.meta} reservas
+            <Store className="size-4" aria-hidden />
+            {interessados} de {preVenda.meta} lojistas reservaram
           </span>
           <span className="text-muted-foreground">{preVenda.prazo}</span>
         </div>
@@ -53,6 +54,29 @@ export function PreVendaCard({
             completa={validada}
           />
         </div>
+      </div>
+
+      {/* Lojistas que já reservaram — a prova de que a demanda existe */}
+      <div className="mt-4 flex flex-wrap items-center gap-1.5">
+        {preVenda.lojasBase.map((loja, i) => (
+          <span
+            key={`${loja}-${i}`}
+            className="rounded-full border border-border bg-background px-2 py-0.5 font-ui text-xs text-secondary"
+          >
+            {loja}
+          </span>
+        ))}
+        {participo && (
+          <span className="rounded-full border border-primary/30 bg-primary/10 px-2 py-0.5 font-ui text-xs font-semibold text-primary">
+            Minha loja
+          </span>
+        )}
+        {interessados > preVenda.lojasBase.length + (participo ? 1 : 0) && (
+          <span className="font-ui text-xs text-muted-foreground">
+            +{interessados - preVenda.lojasBase.length - (participo ? 1 : 0)}{" "}
+            outras
+          </span>
+        )}
       </div>
 
       <div className="mt-5">

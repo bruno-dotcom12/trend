@@ -11,6 +11,7 @@ export const PRE_VENDAS_SEMENTE: PreVenda[] = [
     categoria: "Saias",
     meta: 30,
     interessadosBase: 22,
+    lojasBase: ["Boutique Sol", "Loja Dom", "Use & Vá", "Trecho 9"],
     prazo: "fecha em 5 dias",
   },
   {
@@ -20,6 +21,7 @@ export const PRE_VENDAS_SEMENTE: PreVenda[] = [
     categoria: "Vestidos",
     meta: 24,
     interessadosBase: 24,
+    lojasBase: ["Maria Bonita", "Ateliê Marta", "Corpo & Cia", "Fit Norte"],
     prazo: "meta atingida",
   },
   {
@@ -29,6 +31,7 @@ export const PRE_VENDAS_SEMENTE: PreVenda[] = [
     categoria: "Jeanswear",
     meta: 20,
     interessadosBase: 9,
+    lojasBase: ["Loja Dom", "Boutique Sol"],
     prazo: "fecha em 9 dias",
   },
 ];

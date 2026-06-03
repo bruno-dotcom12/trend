@@ -1,5 +1,7 @@
 "use client";
 
+import { Lightbulb } from "lucide-react";
+
 import { AvisoPerfil } from "@/components/aviso-perfil";
 import { CamadaHeader } from "@/components/camada-header";
 import { CompraColetivaCard } from "@/components/compra-coletiva-card";
@@ -57,6 +59,21 @@ export default function ComprarPage() {
             Reserve antes de comprar — só pague o lote se a demanda existir.
           </p>
         </div>
+
+        {/* Quadro didático: como ler a barra e os nomes de lojistas */}
+        <div className="mt-5 flex items-start gap-3 rounded-xl border border-accent/50 bg-accent/10 p-4">
+          <Lightbulb className="mt-0.5 size-5 shrink-0 text-primary" aria-hidden />
+          <p className="font-body text-sm leading-relaxed text-foreground/90">
+            <strong className="font-semibold">Como ler isto:</strong> cada reserva
+            é uma lojista como você apostando nesta peça antes de pagar o lote.
+            Quanto mais lojistas reservam, mais a demanda se confirma. Quando a
+            barra atinge a meta, a peça fica{" "}
+            <strong className="font-semibold">demanda validada</strong> — é prova
+            de mercado, não palpite. Aí comprar o lote deixa de ser aposta no
+            escuro.
+          </p>
+        </div>
+
         <div className="mt-5 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
           {preVendas.map((pv) => (
             <PreVendaCard
