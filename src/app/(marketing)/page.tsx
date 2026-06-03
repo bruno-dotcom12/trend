@@ -59,155 +59,86 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-full bg-background text-foreground">
-      {/* ===== HERO ===== */}
-      <section className="trend-grain relative overflow-hidden">
-        <div className="trend-aurora absolute inset-0" aria-hidden />
-        <div className="trend-grid absolute inset-0 opacity-70" aria-hidden />
+      {/* ===== HERO (foto full-bleed + card flutuante) ===== */}
+      <section className="relative isolate overflow-hidden">
+        {/* Foto de fundo */}
+        <Image
+          src="/landing/hero-model.jpg"
+          alt="Editorial de moda — modelo em vestido na paleta da marca"
+          fill
+          priority
+          sizes="100vw"
+          className="-z-10 object-cover object-[72%_center]"
+        />
+        {/* Scrim suave à esquerda: garante legibilidade do card sobre a parede creme */}
+        <div
+          className="absolute inset-0 -z-10 bg-gradient-to-r from-creme/85 via-creme/45 to-transparent"
+          aria-hidden
+        />
+        <div
+          className="absolute inset-0 -z-10 bg-gradient-to-t from-creme/55 via-transparent to-creme/25"
+          aria-hidden
+        />
 
-        <div className="relative">
-          {/* Nav */}
-          <nav className="mx-auto flex w-full max-w-7xl items-center justify-between px-6 py-6">
-            <span className="font-display text-2xl font-bold tracking-tight text-foreground">
-              TREND
-            </span>
-            <div className="flex items-center gap-3">
-              <span className="hidden font-mono text-[11px] uppercase tracking-[0.25em] text-muted-foreground sm:inline">
-                infra de decisão · moda multimarca
-              </span>
+        {/* Nav sobre a foto */}
+        <nav className="mx-auto flex w-full max-w-7xl items-center justify-between px-6 py-6">
+          <span className="font-display text-2xl font-bold tracking-tight text-foreground">
+            TREND
+          </span>
+          <div className="flex items-center gap-3">
+            <a
+              href="#como-funciona"
+              className="hidden font-ui text-sm font-medium text-foreground/80 transition-colors hover:text-foreground sm:inline"
+            >
+              Como funciona
+            </a>
+            <Link
+              href="/app/descobrir"
+              className="inline-flex items-center gap-1.5 rounded-full bg-foreground px-4 py-2 font-ui text-sm font-semibold text-background transition-transform hover:-translate-y-0.5"
+            >
+              Entrar
+              <ArrowUpRight className="size-4" aria-hidden />
+            </Link>
+          </div>
+        </nav>
+
+        {/* Card flutuante com a headline + preview do produto */}
+        <div className="mx-auto flex w-full max-w-7xl px-6 pb-20 pt-6 lg:pb-28 lg:pt-10">
+          <div className="trend-rise w-full max-w-xl rounded-[28px] border border-border/70 bg-card/80 p-7 shadow-2xl shadow-secondary/15 backdrop-blur-xl sm:p-9">
+            <p className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
+              <span className="font-semibold text-primary">01 Sinal</span>
+              <ArrowRight className="size-3" aria-hidden />
+              <span className="font-semibold text-primary">02 Decisão</span>
+              <ArrowRight className="size-3" aria-hidden />
+              <span className="font-semibold text-primary">03 Execução</span>
+            </p>
+
+            <h1 className="mt-5 font-display text-5xl font-bold leading-[1.03] tracking-tight text-foreground sm:text-6xl">
+              Pare de apostar
+              <br />
+              no <span className="italic text-primary">escuro</span>.
+            </h1>
+
+            <p className="mt-5 max-w-md font-body text-lg leading-relaxed text-foreground/80">
+              A infraestrutura que a lojista multimarca usa para repor estoque
+              com método — detecta o sinal, diz{" "}
+              <strong className="font-semibold text-foreground">
+                o quê e quanto comprar
+              </strong>{" "}
+              e blinda o caixa.
+            </p>
+
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
               <Link
                 href="/app/descobrir"
-                className="inline-flex items-center gap-1.5 rounded-full bg-foreground px-4 py-2 font-ui text-sm font-semibold text-background transition-transform hover:-translate-y-0.5"
+                className="group inline-flex items-center justify-center gap-2 rounded-full bg-primary px-6 py-3.5 font-ui text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/20 transition-transform hover:-translate-y-0.5"
               >
-                Entrar
-                <ArrowUpRight className="size-4" aria-hidden />
+                Entrar no produto
+                <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" aria-hidden />
               </Link>
-            </div>
-          </nav>
-
-          {/* Conteúdo do hero */}
-          <div className="mx-auto grid w-full max-w-7xl items-center gap-12 px-6 pb-20 pt-8 lg:grid-cols-[1.05fr_0.95fr] lg:pb-28 lg:pt-12">
-            {/* Texto */}
-            <div>
-              <span className="trend-rise inline-flex items-center gap-2 rounded-full border border-border bg-card/70 px-3 py-1.5 font-mono text-[11px] uppercase tracking-[0.2em] text-secondary backdrop-blur">
-                <span className="size-1.5 animate-pulse rounded-full bg-primary" />
-                Sinal · Decisão · Execução
+              <span className="font-mono text-[11px] text-muted-foreground">
+                dados de demonstração · sem cadastro
               </span>
-
-              <h1 className="trend-rise mt-6 font-display text-5xl font-bold leading-[1.02] tracking-tight text-foreground sm:text-6xl lg:text-7xl" style={{ animationDelay: "80ms" }}>
-                Pare de apostar
-                <br />
-                no <span className="italic text-primary">escuro</span>.
-              </h1>
-
-              <p className="trend-rise mt-6 max-w-xl font-body text-lg leading-relaxed text-foreground/80" style={{ animationDelay: "160ms" }}>
-                A infraestrutura que a lojista multimarca usa para repor estoque
-                com método: detecta o sinal de tendência, diz{" "}
-                <strong className="font-semibold text-foreground">
-                  o quê e quanto comprar
-                </strong>{" "}
-                e blinda o caixa com pré-venda e compra coletiva.
-              </p>
-
-              <div className="trend-rise mt-8 flex flex-wrap items-center gap-3" style={{ animationDelay: "240ms" }}>
-                <Link
-                  href="/app/descobrir"
-                  className="group inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3.5 font-ui text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/20 transition-transform hover:-translate-y-0.5"
-                >
-                  Entrar no produto
-                  <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" aria-hidden />
-                </Link>
-                <a
-                  href="#como-funciona"
-                  className="inline-flex items-center gap-2 rounded-full border border-border bg-card/70 px-6 py-3.5 font-ui text-sm font-semibold text-foreground backdrop-blur transition-colors hover:border-accent"
-                >
-                  Como funciona
-                </a>
-              </div>
-
-              {/* Métricas/assinatura */}
-              <dl className="trend-rise mt-12 grid max-w-lg grid-cols-3 gap-6 border-t border-border pt-8" style={{ animationDelay: "320ms" }}>
-                {[
-                  ["3", "camadas: sinal, decisão, execução"],
-                  ["0–100", "score explicável por peça"],
-                  ["−risco", "capital protegido antes da compra"],
-                ].map(([t, d]) => (
-                  <div key={t}>
-                    <dt className="font-display text-2xl font-bold text-primary">
-                      {t}
-                    </dt>
-                    <dd className="mt-1 font-ui text-xs leading-snug text-muted-foreground">
-                      {d}
-                    </dd>
-                  </div>
-                ))}
-              </dl>
-            </div>
-
-            {/* Imagem + UI do produto sobreposta */}
-            <div className="trend-rise relative mx-auto w-full max-w-md lg:max-w-none" style={{ animationDelay: "200ms" }}>
-              <div className="relative aspect-[4/5] w-full overflow-hidden rounded-[28px] border border-border bg-secondary shadow-2xl shadow-secondary/30">
-                <Image
-                  src="/landing/model.png"
-                  alt="Editorial de moda — peça em destaque na paleta da marca"
-                  fill
-                  priority
-                  sizes="(max-width: 1024px) 100vw, 50vw"
-                  className="object-cover object-top"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-secondary/40 via-transparent to-transparent" />
-
-                {/* Card: sinal detectado */}
-                <div className="absolute left-4 top-4 w-52 rounded-2xl border border-white/15 bg-secondary/80 p-3.5 text-secondary-foreground shadow-xl backdrop-blur-md sm:left-5 sm:top-5">
-                  <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-accent">
-                    sinal detectado
-                  </p>
-                  <p className="mt-1 font-ui text-sm font-semibold text-creme">
-                    Saia midi plissada
-                  </p>
-                  <div className="mt-2 flex items-center gap-2">
-                    <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-white/15">
-                      <div className="trend-grow h-full rounded-full bg-accent" style={{ width: "82%" }} />
-                    </div>
-                    <span className="flex items-center gap-0.5 font-mono text-xs font-semibold text-creme">
-                      <TrendingUp className="size-3 text-accent" aria-hidden />
-                      82
-                    </span>
-                  </div>
-                </div>
-
-                {/* Card: score */}
-                <div className="absolute bottom-5 right-4 flex items-center gap-3 rounded-2xl border border-white/15 bg-creme/95 p-3.5 shadow-xl backdrop-blur-md sm:right-5">
-                  <div className="flex size-14 flex-col items-center justify-center rounded-full bg-primary font-display text-primary-foreground">
-                    <span className="text-xl font-bold leading-none">92</span>
-                    <span className="text-[9px] opacity-80">/100</span>
-                  </div>
-                  <div className="pr-1">
-                    <p className="font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground">
-                      score de compra
-                    </p>
-                    <p className="font-ui text-xs font-semibold text-secondary">
-                      comprar 24 un.
-                    </p>
-                  </div>
-                </div>
-
-                {/* Card: lote coletivo */}
-                <div className="absolute bottom-5 left-4 hidden w-44 rounded-2xl border border-white/15 bg-secondary/80 p-3.5 text-secondary-foreground shadow-xl backdrop-blur-md sm:block">
-                  <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-accent">
-                    compra coletiva
-                  </p>
-                  <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-white/15">
-                    <div className="trend-grow h-full rounded-full bg-creme" style={{ width: "80%" }} />
-                  </div>
-                  <p className="mt-1.5 font-mono text-[11px] text-creme/80">
-                    48/60 un. · lote quase furado
-                  </p>
-                </div>
-              </div>
-
-              <figcaption className="mt-3 text-center font-display text-sm italic text-muted-foreground">
-                “A lojista que parou de apostar no escuro.”
-              </figcaption>
             </div>
           </div>
         </div>
