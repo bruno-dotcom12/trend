@@ -4,7 +4,9 @@ import { AvisoPerfil } from "@/components/aviso-perfil";
 import { CamadaHeader } from "@/components/camada-header";
 import { CompraColetivaCard } from "@/components/compra-coletiva-card";
 import { PreVendaCard } from "@/components/pre-venda-card";
+import { ProximoPasso } from "@/components/proximo-passo";
 import { quantidadeRecomendada } from "@/lib/engine";
+import { CAMADAS } from "@/lib/navigation";
 import {
   listarComprasColetivas,
   listarPreVendas,
@@ -22,6 +24,7 @@ export default function BlindarPage() {
   const preVendas = listarPreVendas();
   const compras = listarComprasColetivas();
   const pecas = listarPecas();
+  const camada = CAMADAS.find((c) => c.passo === 3)!;
 
   const nomeMinhaLoja = loja ? `Minha loja · ${loja.cidade}` : "Minha loja";
 
@@ -41,11 +44,7 @@ export default function BlindarPage() {
 
   return (
     <div>
-      <CamadaHeader
-        camada="Execução"
-        titulo="Blindar"
-        descricao="O diferencial do TREND: valide a demanda com pré-venda antes de pagar o lote e junte pedido com outras lojas para furar o lote mínimo. Capital protegido antes da compra."
-      />
+      <CamadaHeader camada={camada} />
       <AvisoPerfil />
 
       {/* Pré-venda */}
@@ -91,6 +90,7 @@ export default function BlindarPage() {
           ))}
         </div>
       </section>
+      <ProximoPasso passoAtual={3} />
     </div>
   );
 }
