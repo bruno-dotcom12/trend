@@ -1,3 +1,4 @@
+import { AvisoPerfil } from "@/components/aviso-perfil";
 import { CamadaHeader, EmBreve } from "@/components/camada-header";
 
 export default function CorrigirPage() {
@@ -8,6 +9,7 @@ export default function CorrigirPage() {
         titulo="Corrigir"
         descricao="O quê e quanto comprar: cada peça candidata com score explicável (0–100), os 3 motivos e a quantidade recomendada para o público da sua loja."
       />
+      <AvisoPerfil />
       <EmBreve>
         A tela de decisão chega na Fatia 3, movida pelo motor determinístico de
         score e quantidade.

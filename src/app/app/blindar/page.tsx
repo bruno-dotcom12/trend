@@ -1,3 +1,4 @@
+import { AvisoPerfil } from "@/components/aviso-perfil";
 import { CamadaHeader, EmBreve } from "@/components/camada-header";
 
 export default function BlindarPage() {
@@ -8,6 +9,7 @@ export default function BlindarPage() {
         titulo="Blindar"
         descricao="O diferencial: pré-venda antes de pagar o lote e compra coletiva entre marcas para furar o lote mínimo — capital protegido antes da compra."
       />
+      <AvisoPerfil />
       <EmBreve>
         A pré-venda e a compra coletiva (com barra de progresso até o lote
         mínimo) chegam na Fatia 4.

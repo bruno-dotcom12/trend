@@ -1,6 +1,7 @@
 import { SiteNav } from "@/components/site-nav";
 
 // Shell do produto: cabeçalho fixo com as 3 camadas + área de conteúdo.
+// O perfil da loja (mock) é lido via hook useLoja(), sem provider.
 export default function AppLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
