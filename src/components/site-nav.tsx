@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Store } from "lucide-react";
+import { LayoutDashboard, Store } from "lucide-react";
 
 import { CAMADAS } from "@/lib/navigation";
 import { useLoja } from "@/lib/loja/store";
@@ -25,6 +25,21 @@ export function SiteNav() {
         </Link>
 
         <nav className="flex items-center gap-1">
+          <Link
+            href="/app/dashboard"
+            aria-current={
+              pathname.startsWith("/app/dashboard") ? "page" : undefined
+            }
+            className={cn(
+              "mr-1 flex items-center gap-1.5 rounded-md px-3 py-1.5 font-ui text-sm font-semibold transition-colors",
+              pathname.startsWith("/app/dashboard")
+                ? "bg-primary text-primary-foreground"
+                : "text-creme/80 hover:bg-white/10 hover:text-creme",
+            )}
+          >
+            <LayoutDashboard className="size-4" aria-hidden />
+            Painel
+          </Link>
           {CAMADAS.map((c) => {
             const ativo = pathname.startsWith(c.href);
             return (
