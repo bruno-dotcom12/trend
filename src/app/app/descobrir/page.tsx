@@ -4,10 +4,12 @@ import { useMemo, useState } from "react";
 
 import { AvisoPerfil } from "@/components/aviso-perfil";
 import { CamadaHeader } from "@/components/camada-header";
+import { FioSelecao } from "@/components/fio-selecao";
 import { ProximoPasso } from "@/components/proximo-passo";
 import { SinalCard } from "@/components/sinal-card";
 import { CAMADAS } from "@/lib/navigation";
 import { useLoja } from "@/lib/loja/store";
+import { listarPecas } from "@/lib/pecas/fonte";
 import { listarSinais } from "@/lib/sinais/fonte";
 import { FONTES, type FonteSinal } from "@/lib/sinais/tipos";
 
@@ -17,6 +19,15 @@ export default function DescobrirPage() {
   const { loja } = useLoja();
   const sinais = listarSinais();
   const camada = CAMADAS.find((c) => c.passo === 1)!;
+
+  // Mapa sinal → peça candidata, para ligar "acompanhar tendência" à seleção.
+  const pecaPorSinal = useMemo(() => {
+    const mapa = new Map<string, string>();
+    for (const p of listarPecas()) {
+      if (p.origemSinalId) mapa.set(p.origemSinalId, p.id);
+    }
+    return mapa;
+  }, []);
 
   const [fonte, setFonte] = useState<FiltroFonte>("todas");
   const [soAderentes, setSoAderentes] = useState(false);
@@ -42,6 +53,7 @@ export default function DescobrirPage() {
     <div>
       <CamadaHeader camada={camada} />
       <AvisoPerfil />
+      <FioSelecao passo={1} />
 
       {/* Filtros */}
       <div className="mt-8 flex flex-wrap items-center gap-2">
@@ -76,7 +88,12 @@ export default function DescobrirPage() {
       ) : (
         <div className="mt-6 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
           {lista.map(({ sinal, aderente }) => (
-            <SinalCard key={sinal.id} sinal={sinal} aderente={aderente} />
+            <SinalCard
+              key={sinal.id}
+              sinal={sinal}
+              aderente={aderente}
+              pecaId={pecaPorSinal.get(sinal.id)}
+            />
           ))}
         </div>
       )}

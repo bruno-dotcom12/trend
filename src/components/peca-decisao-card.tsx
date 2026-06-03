@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { Sparkles } from "lucide-react";
 
+import { BotaoSelecao } from "@/components/botao-selecao";
 import { calcularScore, quantidadeRecomendada } from "@/lib/engine";
 import { montarEntradaScore } from "@/lib/pecas/score";
 import type { PecaCandidata } from "@/lib/pecas/tipos";
@@ -154,6 +155,9 @@ export function PecaDecisaoCard({
           </div>
         )}
         </div>
+
+        {/* Entra na "Minha seleção" e segue para o passo Comprar */}
+        <BotaoSelecao pecaId={peca.id} className="mt-5 w-full" />
       </div>
     </article>
   );

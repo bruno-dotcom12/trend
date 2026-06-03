@@ -4,6 +4,7 @@ import { useMemo } from "react";
 
 import { AvisoPerfil } from "@/components/aviso-perfil";
 import { CamadaHeader } from "@/components/camada-header";
+import { FioSelecao } from "@/components/fio-selecao";
 import { PecaDecisaoCard } from "@/components/peca-decisao-card";
 import { ProximoPasso } from "@/components/proximo-passo";
 import { calcularScore } from "@/lib/engine";
@@ -36,6 +37,7 @@ export default function DecidirPage() {
     <div>
       <CamadaHeader camada={camada} />
       <AvisoPerfil />
+      <FioSelecao passo={2} />
 
       <div className="mt-6 grid gap-5 lg:grid-cols-2">
         {lista.map(({ peca, aderente }) => (

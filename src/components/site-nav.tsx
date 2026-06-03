@@ -2,17 +2,20 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Store } from "lucide-react";
+import { LayoutDashboard, ShoppingBag, Store } from "lucide-react";
 
 import { CAMADAS } from "@/lib/navigation";
 import { useLoja } from "@/lib/loja/store";
+import { useSelecao } from "@/lib/selecao/store";
 import { cn } from "@/lib/utils";
 
 // Cabeçalho do produto: logo + navegação das 3 camadas (Descobrir / Decidir / Comprar).
 export function SiteNav() {
   const pathname = usePathname();
   const { loja, carregada } = useLoja();
+  const { selecionados, carregada: selecaoCarregada } = useSelecao();
   const perfilAtivo = pathname.startsWith("/app/onboarding");
+  const nSelecao = selecionados.length;
 
   return (
     <header className="sticky top-0 z-20 border-b border-border bg-secondary text-secondary-foreground">
@@ -58,6 +61,26 @@ export function SiteNav() {
             );
           })}
         </nav>
+
+        {/* Minha seleção: o carrinho que atravessa as 3 camadas */}
+        <Link
+          href="/app/comprar"
+          title="Minha seleção"
+          className={cn(
+            "relative flex items-center gap-2 rounded-md px-3 py-1.5 font-ui text-sm font-semibold transition-colors",
+            pathname.startsWith("/app/comprar")
+              ? "bg-primary text-primary-foreground"
+              : "text-creme/80 hover:bg-white/10 hover:text-creme",
+          )}
+        >
+          <ShoppingBag className="size-4" aria-hidden />
+          <span className="hidden sm:inline">Minha seleção</span>
+          {selecaoCarregada && nSelecao > 0 && (
+            <span className="flex min-w-5 items-center justify-center rounded-full bg-accent px-1.5 text-xs font-bold text-accent-foreground">
+              {nSelecao}
+            </span>
+          )}
+        </Link>
 
         {/* Chip do perfil: mostra a loja salva ou convida a completar */}
         <Link

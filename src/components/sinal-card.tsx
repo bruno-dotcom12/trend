@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { Minus, Sparkles, TrendingDown, TrendingUp } from "lucide-react";
 
+import { BotaoSelecao } from "@/components/botao-selecao";
 import { cn } from "@/lib/utils";
 import {
   DIRECOES,
@@ -32,9 +33,11 @@ const CLASSE_DIRECAO: Record<DirecaoSinal, string> = {
 export function SinalCard({
   sinal,
   aderente = false,
+  pecaId,
 }: {
   sinal: Sinal;
   aderente?: boolean;
+  pecaId?: string; // peça candidata derivada deste sinal (quando existe)
 }) {
   const faixa = faixaForca(sinal.forca);
   const IconeDirecao = ICONE_DIRECAO[sinal.direcao];
@@ -108,9 +111,18 @@ export function SinalCard({
           {sinal.contexto}
         </p>
 
-        <p className="mt-4 border-t border-border pt-3 font-ui text-xs text-muted-foreground">
-          {sinal.horizonte}
-        </p>
+        <div className="mt-4 flex items-center justify-between gap-3 border-t border-border pt-3">
+          <p className="font-ui text-xs text-muted-foreground">
+            {sinal.horizonte}
+          </p>
+          {pecaId && (
+            <BotaoSelecao
+              pecaId={pecaId}
+              rotuloAdd="Acompanhar tendência"
+              className="shrink-0 px-3 py-1 text-xs"
+            />
+          )}
+        </div>
       </div>
     </article>
   );
