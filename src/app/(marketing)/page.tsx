@@ -100,27 +100,29 @@ export default function LandingPage() {
           <span className="font-display text-2xl font-bold tracking-tight text-foreground">
             TREND
           </span>
-          <div className="flex items-center gap-3">
+          {/* Links centrais, agrupados no meio do nav */}
+          <div className="hidden items-center gap-6 sm:flex">
             <a
               href="#como-funciona"
-              className="hidden font-ui text-sm font-medium text-foreground/80 transition-colors hover:text-foreground sm:inline"
+              className="font-ui text-sm font-medium text-foreground/80 transition-colors hover:text-foreground"
             >
               Como funciona
             </a>
             <a
               href="#score"
-              className="hidden font-ui text-sm font-medium text-foreground/80 transition-colors hover:text-foreground sm:inline"
+              className="font-ui text-sm font-medium text-foreground/80 transition-colors hover:text-foreground"
             >
-              Como o score funciona
+              Entenda o score
             </a>
-            <Link
-              href="/app/descobrir"
-              className="inline-flex items-center gap-1.5 rounded-full bg-foreground px-4 py-2 font-ui text-sm font-semibold text-background transition-transform hover:-translate-y-0.5"
-            >
-              Entrar
-              <ArrowUpRight className="size-4" aria-hidden />
-            </Link>
           </div>
+
+          <Link
+            href="/app/descobrir"
+            className="inline-flex items-center gap-1.5 rounded-full bg-foreground px-4 py-2 font-ui text-sm font-semibold text-background transition-transform hover:-translate-y-0.5"
+          >
+            Entrar
+            <ArrowUpRight className="size-4" aria-hidden />
+          </Link>
         </nav>
 
         {/* Card flutuante com a headline + preview do produto */}
