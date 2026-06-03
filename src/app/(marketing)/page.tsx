@@ -27,17 +27,17 @@ const FATORES = [
 const PASSOS = [
   {
     n: "01",
-    camada: "Sinal",
-    rotulo: "Descobrir",
-    titulo: "Detecte o que está em formação",
+    passo: "Passo 1",
+    rotulo: "Descobrir tendências",
+    titulo: "Veja o que está em formação",
     texto:
       "Reunimos o sinal do público da sua loja, das redes e dos fornecedores bem pontuados num só lugar. Cada peça vem com força e contexto — para você ver a tendência nascendo, não depois que todo mundo já comprou.",
-    selo: "detecção de sinal · nunca previsão",
+    selo: "sinal detectado · nunca previsão",
   },
   {
     n: "02",
-    camada: "Decisão",
-    rotulo: "Corrigir",
+    passo: "Passo 2",
+    rotulo: "Decidir o que comprar",
     titulo: "Saiba o quê e quanto comprar",
     texto:
       "Um score explicável de 0 a 100 com os 3 motivos por trás, e a quantidade recomendada para o tamanho do seu público e do seu caixa. Cálculo determinístico: mesma entrada, mesmo resultado, sem caixa-preta.",
@@ -45,9 +45,9 @@ const PASSOS = [
   },
   {
     n: "03",
-    camada: "Execução",
-    rotulo: "Blindar",
-    titulo: "Compre sem expor o caixa",
+    passo: "Passo 3",
+    rotulo: "Comprar com método",
+    titulo: "Compre reduzindo a exposição do caixa",
     texto:
       "O diferencial. Valide a demanda com pré-venda antes de pagar o lote e junte pedido com outras lojas para furar o lote mínimo. O capital só sai quando o risco já caiu.",
     selo: "pré-venda + compra coletiva",
@@ -180,7 +180,7 @@ export default function LandingPage() {
         <div className="mt-14 grid gap-6 lg:grid-cols-3">
           {PASSOS.map((p, i) => {
             const Icone = ICONES[i];
-            const heroi = p.camada === "Execução";
+            const heroi = p.n === "03";
             return (
               <div
                 key={p.n}
@@ -216,11 +216,19 @@ export default function LandingPage() {
                     heroi ? "text-accent" : "text-muted-foreground",
                   ].join(" ")}
                 >
-                  {p.rotulo} · {p.camada}
+                  {p.passo}
                 </p>
                 <h3 className="mt-2 font-display text-2xl font-bold">
-                  {p.titulo}
+                  {p.rotulo}
                 </h3>
+                <p
+                  className={[
+                    "mt-1 font-ui text-sm font-semibold",
+                    heroi ? "text-creme/90" : "text-foreground/70",
+                  ].join(" ")}
+                >
+                  {p.titulo}
+                </p>
                 <p
                   className={[
                     "mt-3 flex-1 font-body text-sm leading-relaxed",
@@ -264,7 +272,7 @@ export default function LandingPage() {
               de maior peso aparecem em texto claro.
             </p>
             <Link
-              href="/app/corrigir"
+              href="/app/decidir"
               className="mt-7 inline-flex items-center gap-2 font-ui text-sm font-semibold text-primary hover:underline"
             >
               Ver a tela de decisão
