@@ -16,6 +16,7 @@ import { FAIXAS_PRECO, NICHOS } from "@/lib/loja/tipos";
 import { useLoja } from "@/lib/loja/store";
 import { CAMADAS } from "@/lib/navigation";
 import { listarPecas } from "@/lib/pecas/fonte";
+import { montarEntradaScore } from "@/lib/pecas/score";
 import { listarSinais } from "@/lib/sinais/fonte";
 
 const real = new Intl.NumberFormat("pt-BR", {
@@ -47,10 +48,13 @@ export default function InicioPage() {
   const topPecas = useMemo(
     () =>
       pecas
-        .map((p) => ({ peca: p, score: calcularScore(p.fatores).score }))
+        .map((p) => ({
+          peca: p,
+          score: calcularScore(montarEntradaScore(p, loja)).score,
+        }))
         .sort((a, b) => b.score - a.score)
         .slice(0, 3),
-    [pecas],
+    [pecas, loja],
   );
 
   const minhasPreVendas = preVendas.filter((pv) =>

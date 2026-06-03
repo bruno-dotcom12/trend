@@ -10,6 +10,7 @@ import { calcularScore } from "@/lib/engine";
 import { useLoja } from "@/lib/loja/store";
 import { CAMADAS } from "@/lib/navigation";
 import { listarPecas } from "@/lib/pecas/fonte";
+import { montarEntradaScore } from "@/lib/pecas/score";
 
 export default function DecidirPage() {
   const { loja } = useLoja();
@@ -22,7 +23,7 @@ export default function DecidirPage() {
     return pecas
       .map((peca) => ({
         peca,
-        score: calcularScore(peca.fatores).score,
+        score: calcularScore(montarEntradaScore(peca, loja)).score,
         aderente: nicho ? peca.nichos.includes(nicho) : false,
       }))
       .sort((a, b) => {

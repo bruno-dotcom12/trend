@@ -9,6 +9,7 @@ export type PecaCandidata = {
   categoria: string;
   nichos: Nicho[];
   loteMinimo: number;
+  precoAtacado: number; // R$ por unidade no atacado — alimenta encaixe de preço e quantidade
   fatores: Peca; // engajamentoRedes, crescimentoBusca, aderenciaPublico, saturacao (0–100)
   origemSinalId?: string; // liga à camada SINAL (Descobrir)
 };

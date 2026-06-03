@@ -8,6 +8,7 @@ import { CompraColetivaCard } from "@/components/compra-coletiva-card";
 import { PreVendaCard } from "@/components/pre-venda-card";
 import { ProximoPasso } from "@/components/proximo-passo";
 import { quantidadeRecomendada } from "@/lib/engine";
+import { montarEntradaScore } from "@/lib/pecas/score";
 import { CAMADAS } from "@/lib/navigation";
 import {
   listarComprasColetivas,
@@ -34,7 +35,7 @@ export default function ComprarPage() {
   function sugerirUnidades(pecaId: string): number {
     const peca = pecas.find((p) => p.id === pecaId);
     if (peca && loja) {
-      const qtd = quantidadeRecomendada(peca.fatores, {
+      const qtd = quantidadeRecomendada(montarEntradaScore(peca, loja), {
         ticketMedio: loja.ticketMedio,
         capitalDisponivel: loja.capitalDisponivel,
         loteMinimo: peca.loteMinimo,

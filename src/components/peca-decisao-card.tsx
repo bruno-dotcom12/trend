@@ -2,7 +2,7 @@ import Image from "next/image";
 import { Sparkles } from "lucide-react";
 
 import { calcularScore, quantidadeRecomendada } from "@/lib/engine";
-import { QUANTIDADE } from "@/lib/engine/config";
+import { montarEntradaScore } from "@/lib/pecas/score";
 import type { PecaCandidata } from "@/lib/pecas/tipos";
 import type { Loja } from "@/lib/loja/tipos";
 import { cn } from "@/lib/utils";
@@ -34,7 +34,8 @@ export function PecaDecisaoCard({
   loja: Loja | null;
   aderente?: boolean;
 }) {
-  const { score, motivos } = calcularScore(peca.fatores);
+  const entrada = montarEntradaScore(peca, loja);
+  const { score, motivos, personalizado } = calcularScore(entrada);
   const faixa = faixaScore(score);
 
   // Quantidade e custo só fazem sentido com o perfil da loja.
@@ -45,11 +46,8 @@ export function PecaDecisaoCard({
         loteMinimo: peca.loteMinimo,
       }
     : null;
-  const quantidade = ctx ? quantidadeRecomendada(peca.fatores, ctx) : null;
-  const custoUnitario = ctx
-    ? ctx.ticketMedio * QUANTIDADE.fatorCustoAtacado
-    : 0;
-  const custoTotal = quantidade ? quantidade * custoUnitario : 0;
+  const quantidade = ctx ? quantidadeRecomendada(entrada, ctx) : null;
+  const custoTotal = quantidade ? quantidade * peca.precoAtacado : 0;
 
   return (
     <article
@@ -98,7 +96,7 @@ export function PecaDecisaoCard({
             <span className="text-[10px] font-medium opacity-80">/100</span>
           </div>
           <p className="mt-1 font-ui text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
-            score do sinal
+            {personalizado ? "score pra você" : "score de mercado"}
           </p>
         </div>
       </div>

@@ -1,101 +1,202 @@
 import { describe, expect, it } from "vitest";
 
 import { calcularScore, quantidadeRecomendada } from "@/lib/engine";
-import { QUANTIDADE } from "@/lib/engine/config";
-import type { ContextoLoja, Peca } from "@/lib/engine/tipos";
+import type { ContextoLoja, EntradaScore } from "@/lib/engine/tipos";
 
-// Helpers para construir peças legíveis nos testes.
-const peca = (p: Partial<Peca> = {}): Peca => ({
-  engajamentoRedes: 0,
-  crescimentoBusca: 0,
-  aderenciaPublico: 0,
-  saturacao: 0,
-  ...p,
+// Entrada-base neutra; cada teste sobrescreve só o que importa.
+const entrada = (e: Partial<EntradaScore> = {}): EntradaScore => ({
+  engajamentoRedes: 50,
+  crescimentoBusca: 50,
+  saturacao: 50,
+  aderenciaPublico: 50,
+  forcaSinal: 50,
+  fonteSinal: "redes",
+  direcaoSinal: "estavel",
+  precoAtacado: 100,
+  ...e,
 });
 
-describe("calcularScore", () => {
-  it("dá score máximo (100) quando tudo é ótimo e a saturação é zero", () => {
-    const { score } = calcularScore(
-      peca({
-        engajamentoRedes: 100,
-        crescimentoBusca: 100,
-        aderenciaPublico: 100,
-        saturacao: 0,
-      }),
-    );
-    expect(score).toBe(100);
+// Peça "perfeita" para a loja: tudo no topo, sinal forte do próprio público em
+// alta, e preço cujo varejo estimado (100/0.5 = 200) bate o ticket de 200.
+const perfeitaParaLoja = (): EntradaScore =>
+  entrada({
+    engajamentoRedes: 100,
+    crescimentoBusca: 100,
+    saturacao: 0,
+    aderenciaPublico: 100,
+    forcaSinal: 100,
+    fonteSinal: "publico-loja",
+    direcaoSinal: "em-alta",
+    precoAtacado: 100,
+    loja: { ticketMedio: 200, nichoCombina: true },
   });
 
-  it("dá score mínimo (0) quando tudo é péssimo e a saturação é máxima", () => {
+describe("calcularScore — escala e limites", () => {
+  it("o score fica sempre dentro de [0, 100]", () => {
+    expect(calcularScore(perfeitaParaLoja()).score).toBeLessThanOrEqual(100);
+    expect(
+      calcularScore(
+        entrada({
+          engajamentoRedes: 0,
+          crescimentoBusca: 0,
+          saturacao: 100,
+          aderenciaPublico: 0,
+          forcaSinal: 0,
+          fonteSinal: "redes",
+          direcaoSinal: "esfriando",
+        }),
+      ).score,
+    ).toBeGreaterThanOrEqual(0);
+  });
+
+  it("dá 100 para a peça perfeita para a loja", () => {
+    expect(calcularScore(perfeitaParaLoja()).score).toBe(100);
+  });
+
+  it("dá score baixo para uma peça fraca e esfriando", () => {
     const { score } = calcularScore(
-      peca({
+      entrada({
         engajamentoRedes: 0,
         crescimentoBusca: 0,
-        aderenciaPublico: 0,
         saturacao: 100,
+        aderenciaPublico: 0,
+        forcaSinal: 0,
+        fonteSinal: "redes",
+        direcaoSinal: "esfriando",
       }),
     );
-    expect(score).toBe(0);
+    expect(score).toBeLessThan(25);
   });
+});
 
-  it("derruba o score quando a saturação sobe (resto igual)", () => {
-    const base = peca({
-      engajamentoRedes: 60,
-      crescimentoBusca: 60,
-      aderenciaPublico: 60,
-      saturacao: 0,
-    });
-    const saturada = { ...base, saturacao: 100 };
-
+describe("calcularScore — efeito de cada variável", () => {
+  it("saturação alta derruba o score (resto igual)", () => {
+    const base = entrada({ saturacao: 0 });
+    const saturada = entrada({ saturacao: 100 });
     expect(calcularScore(saturada).score).toBeLessThan(
       calcularScore(base).score,
     );
   });
 
-  it("retorna exatamente os 3 fatores de maior contribuição", () => {
-    const { motivos } = calcularScore(
-      peca({
+  it("sinal mais forte eleva o score (resto igual)", () => {
+    expect(calcularScore(entrada({ forcaSinal: 100 })).score).toBeGreaterThan(
+      calcularScore(entrada({ forcaSinal: 0 })).score,
+    );
+  });
+
+  it("direção em alta vale mais que esfriando (resto igual)", () => {
+    expect(
+      calcularScore(entrada({ direcaoSinal: "em-alta" })).score,
+    ).toBeGreaterThan(
+      calcularScore(entrada({ direcaoSinal: "esfriando" })).score,
+    );
+  });
+
+  it("fonte do próprio público vale mais que redes (resto igual)", () => {
+    expect(
+      calcularScore(entrada({ fonteSinal: "publico-loja" })).score,
+    ).toBeGreaterThan(calcularScore(entrada({ fonteSinal: "redes" })).score);
+  });
+});
+
+describe("calcularScore — personalização pela loja", () => {
+  it("nicho que combina pontua mais que nicho divergente", () => {
+    const combina = entrada({
+      aderenciaPublico: 70,
+      loja: { ticketMedio: 200, nichoCombina: true },
+    });
+    const diverge = entrada({
+      aderenciaPublico: 70,
+      loja: { ticketMedio: 200, nichoCombina: false },
+    });
+    expect(calcularScore(combina).score).toBeGreaterThan(
+      calcularScore(diverge).score,
+    );
+  });
+
+  it("preço alinhado ao ticket pontua mais que preço desalinhado", () => {
+    // varejo estimado = preco / 0.5. Alinhado: 100→200 == ticket 200.
+    const alinhado = entrada({
+      precoAtacado: 100,
+      loja: { ticketMedio: 200, nichoCombina: true },
+    });
+    const caro = entrada({
+      precoAtacado: 400, // varejo 800, bem acima do ticket 200
+      loja: { ticketMedio: 200, nichoCombina: true },
+    });
+    expect(calcularScore(alinhado).score).toBeGreaterThan(
+      calcularScore(caro).score,
+    );
+  });
+
+  it("marca personalizado=true só quando há loja", () => {
+    expect(calcularScore(entrada()).personalizado).toBe(false);
+    expect(
+      calcularScore(
+        entrada({ loja: { ticketMedio: 200, nichoCombina: true } }),
+      ).personalizado,
+    ).toBe(true);
+  });
+
+  it("sem loja, o encaixe de preço nunca aparece nos motivos", () => {
+    const { motivos } = calcularScore(perfeitaParaLoja());
+    const semLoja = calcularScore(
+      entrada({
         engajamentoRedes: 100,
         crescimentoBusca: 100,
+        saturacao: 0,
+        forcaSinal: 100,
+        fonteSinal: "publico-loja",
+        direcaoSinal: "em-alta",
+      }),
+    );
+    expect(semLoja.motivos.map((m) => m.fator)).not.toContain("encaixePreco");
+    // sanity: com loja o conjunto de fatores pode incluir o encaixe
+    expect(motivos.length).toBe(3);
+  });
+
+  it("renormaliza os pesos sem loja: peça-topo sem perfil ainda chega a 100", () => {
+    const { score } = calcularScore(
+      entrada({
+        engajamentoRedes: 100,
+        crescimentoBusca: 100,
+        saturacao: 0,
         aderenciaPublico: 100,
-        saturacao: 0,
+        forcaSinal: 100,
+        fonteSinal: "publico-loja",
+        direcaoSinal: "em-alta",
       }),
     );
+    expect(score).toBe(100);
+  });
+});
+
+describe("calcularScore — motivos", () => {
+  it("retorna exatamente 3 motivos, com contribuição positiva e texto legível", () => {
+    const { motivos } = calcularScore(perfeitaParaLoja());
     expect(motivos).toHaveLength(3);
-    expect(motivos.map((m) => m.fator)).toEqual([
-      "engajamentoRedes",
-      "crescimentoBusca",
-      "aderenciaPublico",
-    ]);
-  });
-
-  it("desempata motivos por ordem canônica dos fatores", () => {
-    // engajamento e crescimento empatam em contribuição (mesmo peso e valor);
-    // a ordem deve ser determinística: engajamentoRedes antes de crescimentoBusca.
-    const { motivos } = calcularScore(
-      peca({
-        engajamentoRedes: 80,
-        crescimentoBusca: 80,
-        aderenciaPublico: 0,
-        saturacao: 0,
-      }),
-    );
-    expect(motivos.map((m) => m.fator)).toEqual([
-      "engajamentoRedes",
-      "crescimentoBusca",
-      "saturacao", // frescor (100-0) entra como 3º
-    ]);
-  });
-
-  it("cada motivo tem contribuição positiva e texto explicativo legível", () => {
-    const { motivos } = calcularScore(
-      peca({ engajamentoRedes: 90, crescimentoBusca: 70, aderenciaPublico: 50 }),
-    );
     for (const m of motivos) {
       expect(m.contribuicao).toBeGreaterThan(0);
       expect(m.texto.length).toBeGreaterThan(10);
     }
-    expect(motivos[0].texto).toMatch(/redes/i);
+  });
+
+  it("desempata por ordem canônica quando as contribuições empatam", () => {
+    // engajamento e crescimento têm o mesmo peso (0.15) e o mesmo valor → empatam;
+    // engajamentoRedes deve vir antes por ser anterior na ordem canônica.
+    const { motivos } = calcularScore(
+      entrada({
+        engajamentoRedes: 100,
+        crescimentoBusca: 100,
+        saturacao: 100, // frescor 0, não compete
+        aderenciaPublico: 0,
+        forcaSinal: 0,
+        fonteSinal: "redes",
+        direcaoSinal: "esfriando",
+      }),
+    );
+    expect(motivos[0].fator).toBe("engajamentoRedes");
+    expect(motivos[1].fator).toBe("crescimentoBusca");
   });
 });
 
@@ -107,19 +208,11 @@ describe("quantidadeRecomendada", () => {
     ...c,
   });
 
-  const pecaForte = peca({
-    engajamentoRedes: 100,
-    crescimentoBusca: 100,
-    aderenciaPublico: 100,
-    saturacao: 0,
-  });
+  const pecaForte = perfeitaParaLoja(); // preco 100, score 100
 
   it("retorna 0 quando o capital não cobre nem um lote mínimo", () => {
-    // custo unitário = 200 * 0.5 = 100; capital 500 → 5 unidades < lote 12
-    const qtd = quantidadeRecomendada(
-      pecaForte,
-      loja({ capitalDisponivel: 500 }),
-    );
+    // custo unitário = precoAtacado 100; capital 500 → 5 unidades < lote 12
+    const qtd = quantidadeRecomendada(pecaForte, loja({ capitalDisponivel: 500 }));
     expect(qtd).toBe(0);
   });
 
@@ -131,20 +224,25 @@ describe("quantidadeRecomendada", () => {
 
   it("nunca estoura o capital disponível", () => {
     const ctx = loja();
-    const custoUnitario = ctx.ticketMedio * QUANTIDADE.fatorCustoAtacado;
     const qtd = quantidadeRecomendada(pecaForte, ctx);
-    expect(qtd * custoUnitario).toBeLessThanOrEqual(ctx.capitalDisponivel);
+    expect(qtd * pecaForte.precoAtacado).toBeLessThanOrEqual(
+      ctx.capitalDisponivel,
+    );
   });
 
   it("recomenda comprar menos para uma peça mais fraca", () => {
-    const pecaMedia = peca({
-      engajamentoRedes: 50,
-      crescimentoBusca: 50,
-      aderenciaPublico: 50,
-      saturacao: 50,
+    const pecaFraca = entrada({
+      engajamentoRedes: 40,
+      crescimentoBusca: 40,
+      saturacao: 70,
+      aderenciaPublico: 40,
+      forcaSinal: 40,
+      fonteSinal: "redes",
+      direcaoSinal: "esfriando",
+      precoAtacado: 100,
     });
     const ctx = loja();
-    expect(quantidadeRecomendada(pecaMedia, ctx)).toBeLessThan(
+    expect(quantidadeRecomendada(pecaFraca, ctx)).toBeLessThan(
       quantidadeRecomendada(pecaForte, ctx),
     );
   });

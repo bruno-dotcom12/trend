@@ -9,6 +9,7 @@ export const PECAS_SEMENTE: PecaCandidata[] = [
     categoria: "Saias",
     nichos: ["feminino", "plus"],
     loteMinimo: 12,
+    precoAtacado: 55,
     origemSinalId: "saia-midi-plissada",
     fatores: {
       engajamentoRedes: 85,
@@ -23,6 +24,7 @@ export const PECAS_SEMENTE: PecaCandidata[] = [
     categoria: "Alfaiataria",
     nichos: ["feminino", "masculino", "plus"],
     loteMinimo: 10,
+    precoAtacado: 79,
     origemSinalId: "calca-alfaiataria-fluida",
     fatores: {
       engajamentoRedes: 70,
@@ -37,6 +39,7 @@ export const PECAS_SEMENTE: PecaCandidata[] = [
     categoria: "Vestidos",
     nichos: ["feminino", "plus"],
     loteMinimo: 8,
+    precoAtacado: 69,
     origemSinalId: "vestido-chemise",
     fatores: {
       engajamentoRedes: 66,
@@ -51,6 +54,7 @@ export const PECAS_SEMENTE: PecaCandidata[] = [
     categoria: "Activewear",
     nichos: ["fitness", "feminino"],
     loteMinimo: 15,
+    precoAtacado: 64,
     origemSinalId: "conjunto-fitness-canelado",
     fatores: {
       engajamentoRedes: 78,
@@ -65,6 +69,7 @@ export const PECAS_SEMENTE: PecaCandidata[] = [
     categoria: "Jeanswear",
     nichos: ["feminino", "masculino", "plus"],
     loteMinimo: 6,
+    precoAtacado: 89,
     origemSinalId: "jaqueta-jeans-oversized",
     fatores: {
       engajamentoRedes: 72,
@@ -79,6 +84,7 @@ export const PECAS_SEMENTE: PecaCandidata[] = [
     categoria: "Malharia",
     nichos: ["feminino", "masculino"],
     loteMinimo: 12,
+    precoAtacado: 52,
     origemSinalId: "tricot-canelado",
     fatores: {
       engajamentoRedes: 55,
@@ -93,6 +99,7 @@ export const PECAS_SEMENTE: PecaCandidata[] = [
     categoria: "Beachwear",
     nichos: ["praia", "feminino"],
     loteMinimo: 20,
+    precoAtacado: 39,
     origemSinalId: "biquini-cortininha",
     fatores: {
       engajamentoRedes: 50,
@@ -107,6 +114,7 @@ export const PECAS_SEMENTE: PecaCandidata[] = [
     categoria: "Alfaiataria",
     nichos: ["feminino"],
     loteMinimo: 10,
+    precoAtacado: 59,
     origemSinalId: "colete-alfaiataria",
     fatores: {
       engajamentoRedes: 44,
