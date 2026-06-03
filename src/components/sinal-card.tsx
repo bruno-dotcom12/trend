@@ -47,7 +47,7 @@ export function SinalCard({
       )}
     >
       {/* Foto real da peça */}
-      <div className="relative aspect-[4/3] w-full overflow-hidden bg-muted">
+      <div className="relative aspect-[16/9] w-full overflow-hidden bg-muted">
         <Image
           src={`/pecas/${sinal.id}.jpg`}
           alt={sinal.titulo}
