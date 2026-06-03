@@ -62,6 +62,14 @@ export type Motivo = {
   texto: string; // explicação legível
 };
 
+// Detalhe de um fator no cálculo — usado para explicar o score de forma aberta.
+export type Contribuicao = {
+  fator: Fator;
+  valor: number; // 0–100 (valor bruto do fator, já com frescor/ajustes)
+  peso: number; // peso renormalizado usado neste cálculo
+  contribuicao: number; // valor * peso (pontos no score)
+};
+
 export type ResultadoScore = {
   score: number; // 0–100
   motivos: Motivo[]; // os 3 fatores de maior contribuição

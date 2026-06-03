@@ -8,6 +8,7 @@ import {
   varejoEstimado,
 } from "@/lib/engine/config";
 import type {
+  Contribuicao,
   ContextoLoja,
   EntradaScore,
   Fator,
@@ -72,14 +73,26 @@ function pesosAtivos(temLoja: boolean): Map<Fator, number> {
   return new Map(fatores.map((f) => [f, PESOS[f] / soma]));
 }
 
-export function calcularScore(entrada: EntradaScore): ResultadoScore {
-  const temLoja = Boolean(entrada.loja);
-  const pesos = pesosAtivos(temLoja);
+// Contribuição de cada fator ativo (valor 0–100, peso renormalizado, pontos).
+function contribuicoes(entrada: EntradaScore): Contribuicao[] {
+  const pesos = pesosAtivos(Boolean(entrada.loja));
+  return [...pesos.entries()].map(([fator, peso]) => {
+    const valor = valorDoFator(entrada, fator);
+    return { fator, valor, peso, contribuicao: valor * peso };
+  });
+}
 
-  const contribs = [...pesos.entries()].map(([fator, peso]) => ({
-    fator,
-    contribuicao: valorDoFator(entrada, fator) * peso,
-  }));
+// Ordena por contribuição desc; empate desempata pela ordem canônica
+// (índice em ORDEM_FATORES) — desempate estável e determinístico.
+function ordenarPorContribuicao(a: Contribuicao, b: Contribuicao): number {
+  return (
+    b.contribuicao - a.contribuicao ||
+    ORDEM_FATORES.indexOf(a.fator) - ORDEM_FATORES.indexOf(b.fator)
+  );
+}
+
+export function calcularScore(entrada: EntradaScore): ResultadoScore {
+  const contribs = contribuicoes(entrada);
 
   const score = limitar(
     Math.round(contribs.reduce((soma, c) => soma + c.contribuicao, 0)),
@@ -87,14 +100,8 @@ export function calcularScore(entrada: EntradaScore): ResultadoScore {
     100,
   );
 
-  // Ordena por contribuição desc; empate desempata pela ordem canônica
-  // (índice em ORDEM_FATORES) — desempate estável e determinístico.
-  const indice = (f: Fator) => ORDEM_FATORES.indexOf(f);
-  const motivos: Motivo[] = contribs
-    .sort(
-      (a, b) =>
-        b.contribuicao - a.contribuicao || indice(a.fator) - indice(b.fator),
-    )
+  const motivos: Motivo[] = [...contribs]
+    .sort(ordenarPorContribuicao)
     .slice(0, 3)
     .map(({ fator, contribuicao }) => ({
       fator,
@@ -102,7 +109,27 @@ export function calcularScore(entrada: EntradaScore): ResultadoScore {
       texto: TEXTO_MOTIVO[fator](entrada),
     }));
 
-  return { score, motivos, personalizado: temLoja };
+  return { score, motivos, personalizado: Boolean(entrada.loja) };
+}
+
+// Detalhamento completo (todos os fatores ativos, ordenados) — usado para
+// explicar o score de forma transparente (ex.: seção "por dentro do score").
+export function detalharScore(entrada: EntradaScore) {
+  const contribs = [...contribuicoes(entrada)].sort(ordenarPorContribuicao);
+  const score = limitar(
+    Math.round(contribs.reduce((soma, c) => soma + c.contribuicao, 0)),
+    0,
+    100,
+  );
+  return {
+    score,
+    personalizado: Boolean(entrada.loja),
+    fatores: contribs.map((c) => ({
+      ...c,
+      contribuicao: Math.round(c.contribuicao),
+      texto: TEXTO_MOTIVO[c.fator](entrada),
+    })),
+  };
 }
 
 export function quantidadeRecomendada(

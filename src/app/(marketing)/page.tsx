@@ -12,17 +12,31 @@ import {
   X,
 } from "lucide-react";
 
+import { detalharScore } from "@/lib/engine";
+import { FATOR_ROTULO } from "@/lib/engine/config";
+import { listarPecas } from "@/lib/pecas/fonte";
+import { montarEntradaScore } from "@/lib/pecas/score";
 import { listarSinais } from "@/lib/sinais/fonte";
+import type { Loja } from "@/lib/loja/tipos";
 
 const ICONES = [Radar, Scale, ShieldCheck];
 
-// Os 4 fatores do motor — usados no explicador "por dentro do score".
-const FATORES = [
-  { nome: "Engajamento nas redes", valor: 85 },
-  { nome: "Crescimento de busca", valor: 80 },
-  { nome: "Aderência ao público", valor: 78 },
-  { nome: "Saturação (penaliza)", valor: 30 },
-];
+// Loja de demonstração para mostrar o score JÁ personalizado na landing.
+const LOJA_DEMO: Loja = {
+  nicho: "feminino",
+  cidade: "Demonstração",
+  uf: "SP",
+  faixaPreco: "medio",
+  ticketMedio: 120,
+  publicoEstimado: 1500,
+  capitalDisponivel: 6000,
+};
+
+// Peça-vitrine do explicador "por dentro do score": números puxados do MOTOR
+// REAL (mesma função que roda no produto), não valores fixos de marketing.
+const PECA_DEMO =
+  listarPecas().find((p) => p.id === "saia-midi-plissada") ?? listarPecas()[0];
+const SCORE_DEMO = detalharScore(montarEntradaScore(PECA_DEMO, LOJA_DEMO));
 
 const PASSOS = [
   {
@@ -40,8 +54,8 @@ const PASSOS = [
     rotulo: "Decidir o que comprar",
     titulo: "Saiba o quê e quanto comprar",
     texto:
-      "Um score explicável de 0 a 100 com os 3 motivos por trás, e a quantidade recomendada para o tamanho do seu público e do seu caixa. Cálculo determinístico: mesma entrada, mesmo resultado, sem caixa-preta.",
-    selo: "score + quantidade recomendada",
+      "Um score explicável de 0 a 100 com os 3 motivos por trás, e a quantidade recomendada para o tamanho do seu público e do seu caixa. Selecione as peças que quer comprar — elas seguem com você para a próxima etapa.",
+    selo: "score + quantidade + seleção",
   },
   {
     n: "03",
@@ -49,7 +63,7 @@ const PASSOS = [
     rotulo: "Comprar com método",
     titulo: "Compre reduzindo a exposição do caixa",
     texto:
-      "O diferencial. Valide a demanda com pré-venda antes de pagar o lote e junte pedido com outras lojas para furar o lote mínimo. O capital só sai quando o risco já caiu.",
+      "O diferencial. As roupas que você escolheu chegam aqui prontas: valide a demanda com pré-venda antes de pagar o lote e junte pedido com outras lojas para furar o lote mínimo. O capital só sai quando o risco já caiu.",
     selo: "pré-venda + compra coletiva",
   },
 ];
@@ -92,6 +106,12 @@ export default function LandingPage() {
               className="hidden font-ui text-sm font-medium text-foreground/80 transition-colors hover:text-foreground sm:inline"
             >
               Como funciona
+            </a>
+            <a
+              href="#score"
+              className="hidden font-ui text-sm font-medium text-foreground/80 transition-colors hover:text-foreground sm:inline"
+            >
+              Como o score funciona
             </a>
             <Link
               href="/app/descobrir"
@@ -256,20 +276,35 @@ export default function LandingPage() {
       </section>
 
       {/* ===== POR DENTRO DO SCORE ===== */}
-      <section className="border-y border-border bg-muted/40">
+      <section id="score" className="scroll-mt-20 border-y border-border bg-muted/40">
         <div className="mx-auto grid w-full max-w-7xl items-center gap-12 px-6 py-20 lg:grid-cols-2">
           <div>
             <span className="font-mono text-[11px] uppercase tracking-[0.25em] text-primary">
-              Por dentro do score
+              Como o score funciona
             </span>
             <h2 className="mt-4 font-display text-4xl font-bold leading-tight text-foreground">
               Um número que você consegue explicar
             </h2>
             <p className="mt-4 font-body text-lg text-muted-foreground">
-              O score combina quatro fatores com pesos fixos. Saturação alta
-              derruba a nota. Nada de “a IA mandou” — a conta é determinística e
-              os <strong className="font-semibold text-foreground">3 motivos</strong>{" "}
-              de maior peso aparecem em texto claro.
+              O score combina{" "}
+              <strong className="font-semibold text-foreground">
+                oito variáveis
+              </strong>{" "}
+              com pesos fixos: o engajamento e a busca da peça, a força, a
+              direção e a confiança da fonte do sinal, e — quando você completa o
+              perfil — a aderência ao seu nicho e o encaixe de preço no seu
+              ticket. Saturação alta derruba a nota.
+            </p>
+            <p className="mt-4 font-body text-lg text-muted-foreground">
+              Nada de “a IA mandou”: a conta é determinística (mesma entrada,
+              mesmo resultado) e os{" "}
+              <strong className="font-semibold text-foreground">3 motivos</strong>{" "}
+              de maior peso aparecem em texto claro. Com o perfil preenchido, o
+              número deixa de ser genérico e vira{" "}
+              <strong className="font-semibold text-foreground">
+                o seu score
+              </strong>
+              .
             </p>
             <Link
               href="/app/decidir"
@@ -280,30 +315,42 @@ export default function LandingPage() {
             </Link>
           </div>
 
-          {/* Mini-visual do motor */}
+          {/* Mini-visual do motor — números puxados do motor real */}
           <div className="rounded-3xl border border-border bg-card p-7 shadow-xl shadow-secondary/5">
             <div className="flex items-center justify-between">
-              <p className="font-ui text-sm font-semibold text-foreground">
-                Saia midi plissada
-              </p>
+              <div>
+                <p className="font-ui text-sm font-semibold text-foreground">
+                  {PECA_DEMO.titulo}
+                </p>
+                <p className="font-mono text-[11px] uppercase tracking-wider text-primary">
+                  score pra você
+                </p>
+              </div>
               <span className="flex size-14 flex-col items-center justify-center rounded-full bg-primary font-display text-primary-foreground">
-                <span className="text-xl font-bold leading-none">92</span>
+                <span className="text-xl font-bold leading-none">
+                  {SCORE_DEMO.score}
+                </span>
                 <span className="text-[9px] opacity-80">/100</span>
               </span>
             </div>
-            <div className="mt-6 space-y-3.5">
-              {FATORES.map((f) => (
-                <div key={f.nome}>
+            <div className="mt-6 space-y-3">
+              {SCORE_DEMO.fatores.map((f) => (
+                <div key={f.fator}>
                   <div className="flex items-center justify-between font-mono text-xs">
-                    <span className="text-muted-foreground">{f.nome}</span>
+                    <span className="text-muted-foreground">
+                      {FATOR_ROTULO[f.fator]}
+                      <span className="ml-1 text-muted-foreground/50">
+                        peso {Math.round(f.peso * 100)}%
+                      </span>
+                    </span>
                     <span className="font-semibold text-foreground">
-                      {f.valor}
+                      {Math.round(f.valor)}
                     </span>
                   </div>
-                  <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-muted">
+                  <div className="mt-1 h-2 overflow-hidden rounded-full bg-muted">
                     <div
                       className="trend-grow h-full rounded-full bg-accent"
-                      style={{ width: `${f.valor}%` }}
+                      style={{ width: `${Math.round(f.valor)}%` }}
                     />
                   </div>
                 </div>
@@ -312,8 +359,7 @@ export default function LandingPage() {
             <div className="mt-6 flex items-start gap-2 rounded-xl bg-muted/70 p-3">
               <Check className="mt-0.5 size-4 shrink-0 text-primary" aria-hidden />
               <p className="font-body text-xs text-foreground/80">
-                Engajamento e busca puxam para cima; baixa saturação confirma que
-                o mercado ainda não está lotado.
+                {SCORE_DEMO.fatores[0].texto}
               </p>
             </div>
           </div>

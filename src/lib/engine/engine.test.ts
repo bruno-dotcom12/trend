@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest";
 
-import { calcularScore, quantidadeRecomendada } from "@/lib/engine";
+import {
+  calcularScore,
+  detalharScore,
+  quantidadeRecomendada,
+} from "@/lib/engine";
 import type { ContextoLoja, EntradaScore } from "@/lib/engine/tipos";
 
 // Entrada-base neutra; cada teste sobrescreve só o que importa.
@@ -197,6 +201,29 @@ describe("calcularScore — motivos", () => {
     );
     expect(motivos[0].fator).toBe("engajamentoRedes");
     expect(motivos[1].fator).toBe("crescimentoBusca");
+  });
+});
+
+describe("detalharScore", () => {
+  it("lista 8 fatores com loja e 7 sem loja (encaixe de preço sai)", () => {
+    expect(detalharScore(perfeitaParaLoja()).fatores).toHaveLength(8);
+    expect(detalharScore(entrada()).fatores).toHaveLength(7);
+    expect(detalharScore(entrada()).fatores.map((f) => f.fator)).not.toContain(
+      "encaixePreco",
+    );
+  });
+
+  it("o score do detalhe bate com o de calcularScore", () => {
+    const e = perfeitaParaLoja();
+    expect(detalharScore(e).score).toBe(calcularScore(e).score);
+  });
+
+  it("os pesos ativos somam ~1.0 (renormalizados)", () => {
+    const soma = detalharScore(entrada()).fatores.reduce(
+      (s, f) => s + f.peso,
+      0,
+    );
+    expect(soma).toBeCloseTo(1, 5);
   });
 });
 

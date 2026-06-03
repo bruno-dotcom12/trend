@@ -64,6 +64,18 @@ export const QUANTIDADE = {
   fatorCustoAtacado: 0.5,
 };
 
+// Rótulo curto de cada fator — para explicar o score na UI (ex.: landing).
+export const FATOR_ROTULO: Record<Fator, string> = {
+  engajamentoRedes: "Engajamento nas redes",
+  crescimentoBusca: "Crescimento de busca",
+  saturacao: "Frescor (baixa saturação)",
+  forcaSinal: "Força do sinal",
+  confiancaFonte: "Confiança da fonte",
+  momento: "Momento da tendência",
+  aderenciaPublico: "Aderência ao seu público",
+  encaixePreco: "Encaixe de preço",
+};
+
 // Rótulos legíveis para os textos dos motivos.
 export const FONTE_ROTULO: Record<FonteSinal, string> = {
   "publico-loja": "o público da sua loja",
