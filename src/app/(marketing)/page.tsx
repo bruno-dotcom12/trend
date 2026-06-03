@@ -126,7 +126,7 @@ export default function LandingPage() {
               <strong className="font-semibold text-foreground">
                 o quê e quanto comprar
               </strong>{" "}
-              e blinda o caixa.
+              sem expor todo o caixa de uma vez.
             </p>
 
             <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
@@ -169,7 +169,7 @@ export default function LandingPage() {
             Como funciona
           </span>
           <h2 className="mt-4 font-display text-4xl font-bold leading-tight text-foreground sm:text-5xl">
-            Do sinal à compra blindada, em três camadas
+            Do sinal à compra com método, em três camadas
           </h2>
           <p className="mt-4 font-body text-lg text-muted-foreground">
             Cada camada resolve uma parte do “apostar no escuro”. A terceira é o
@@ -413,7 +413,7 @@ export default function LandingPage() {
             Sua próxima compra não precisa ser um palpite
           </h2>
           <p className="mx-auto mt-4 max-w-xl font-body text-lg text-muted-foreground">
-            Comece pelo sinal, veja o score, blinde o caixa. Tudo com dados de
+            Comece pelo sinal, veja o score, compre com método. Tudo com dados de
             demonstração — sem cadastro.
           </p>
           <Link

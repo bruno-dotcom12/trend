@@ -17,7 +17,7 @@ import { listarPecas } from "@/lib/pecas/fonte";
 
 const SUGESTAO_PADRAO = 6; // fallback quando não dá para calcular pelo motor
 
-export default function BlindarPage() {
+export default function ComprarPage() {
   const { loja } = useLoja();
   const { estado } = useExecucao();
 

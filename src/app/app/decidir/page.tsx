@@ -11,7 +11,7 @@ import { useLoja } from "@/lib/loja/store";
 import { CAMADAS } from "@/lib/navigation";
 import { listarPecas } from "@/lib/pecas/fonte";
 
-export default function CorrigirPage() {
+export default function DecidirPage() {
   const { loja } = useLoja();
   const pecas = listarPecas();
   const camada = CAMADAS.find((c) => c.passo === 2)!;

@@ -8,7 +8,7 @@ import { CAMADAS } from "@/lib/navigation";
 import { useLoja } from "@/lib/loja/store";
 import { cn } from "@/lib/utils";
 
-// Cabeçalho do produto: logo + navegação das 3 camadas (Descobrir / Corrigir / Blindar).
+// Cabeçalho do produto: logo + navegação das 3 camadas (Descobrir / Decidir / Comprar).
 export function SiteNav() {
   const pathname = usePathname();
   const { loja, carregada } = useLoja();
