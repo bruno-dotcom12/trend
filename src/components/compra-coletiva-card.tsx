@@ -1,6 +1,7 @@
 "use client";
 
-import { Check, Store } from "lucide-react";
+import { useState } from "react";
+import { Check, Minus, Plus, Store } from "lucide-react";
 
 import { BarraProgresso } from "@/components/barra-progresso";
 import { Button } from "@/components/ui/button";
@@ -14,7 +15,7 @@ const real = new Intl.NumberFormat("pt-BR", {
 });
 
 // Compra coletiva: junta pedidos de várias lojas até furar o lote mínimo.
-// "Entrar na compra" adiciona minha loja com a quantidade sugerida pelo motor.
+// A lojista escolhe quantas unidades quer entrar; a sugestão do motor é só dica.
 export function CompraColetivaCard({
   compra,
   minhasUnidades,
@@ -30,6 +31,26 @@ export function CompraColetivaCard({
   const loteFurado = unidades >= compra.loteMinimo;
   const faltam = Math.max(0, compra.loteMinimo - unidades);
   const participando = minhasUnidades > 0;
+
+  // Quantidade editável. Começa na minha adesão (se já participo) ou na sugestão
+  // do perfil; enquanto a lojista não digitar, acompanha o valor-base — que pode
+  // chegar depois (a sugestão depende do perfil carregado). Sincronizamos em
+  // tempo de render (padrão React), sem efeito.
+  const base = participando ? minhasUnidades : sugestao;
+  const [qtd, setQtd] = useState(base);
+  const [tocado, setTocado] = useState(false);
+  const [baseAnterior, setBaseAnterior] = useState(base);
+  if (!tocado && base !== baseAnterior) {
+    setBaseAnterior(base);
+    setQtd(base);
+  }
+
+  function ajustar(delta: number) {
+    setTocado(true);
+    setQtd((q) => Math.max(1, q + delta));
+  }
+
+  const semMudanca = participando && qtd === minhasUnidades;
 
   const lojas = participando
     ? [...compra.lojasBase, nomeMinhaLoja]
@@ -92,29 +113,70 @@ export function CompraColetivaCard({
       </div>
 
       <div className="mt-5">
-        {participando ? (
-          <div className="flex items-center justify-between gap-3">
-            <p className="font-ui text-sm text-foreground">
-              Participando com{" "}
-              <strong className="font-semibold">{minhasUnidades} un.</strong> ·{" "}
-              {real.format(minhasUnidades * compra.precoUnitario)}
-            </p>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => definirAdesao(compra.id, 0)}
+        <div className="flex items-center justify-between gap-3">
+          <span className="font-ui text-sm font-medium text-foreground">
+            Quantas unidades você quer?
+          </span>
+          <span className="font-ui text-sm font-semibold text-foreground">
+            {real.format(qtd * compra.precoUnitario)}
+          </span>
+        </div>
+
+        <div className="mt-2 flex items-center gap-3">
+          {/* Seletor de quantidade — a lojista define o número */}
+          <div className="flex items-center rounded-full border border-border">
+            <button
+              type="button"
+              onClick={() => ajustar(-1)}
+              disabled={qtd <= 1}
+              aria-label="Diminuir uma unidade"
+              className="flex size-9 items-center justify-center rounded-l-full text-foreground transition-colors hover:bg-muted disabled:opacity-40"
             >
-              Sair
-            </Button>
+              <Minus className="size-4" aria-hidden />
+            </button>
+            <input
+              type="number"
+              min={1}
+              value={qtd}
+              onChange={(e) => {
+                setTocado(true);
+                const n = Math.floor(Number(e.target.value));
+                setQtd(Number.isFinite(n) && n > 0 ? n : 1);
+              }}
+              aria-label="Quantidade de unidades"
+              className="w-14 border-x border-border bg-transparent py-1.5 text-center font-ui text-sm font-semibold text-foreground [appearance:textfield] focus:outline-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+            />
+            <button
+              type="button"
+              onClick={() => ajustar(1)}
+              aria-label="Aumentar uma unidade"
+              className="flex size-9 items-center justify-center rounded-r-full text-foreground transition-colors hover:bg-muted"
+            >
+              <Plus className="size-4" aria-hidden />
+            </button>
           </div>
-        ) : (
-          <Button
-            onClick={() => definirAdesao(compra.id, sugestao)}
-            className="w-full"
-            size="lg"
+          <span className="font-ui text-xs text-muted-foreground">
+            sugestão do seu perfil: {sugestao} un.
+          </span>
+        </div>
+
+        <Button
+          onClick={() => definirAdesao(compra.id, qtd)}
+          disabled={qtd < 1 || semMudanca}
+          className="mt-3 w-full"
+          size="lg"
+        >
+          {participando ? `Atualizar para ${qtd} un.` : `Entrar com ${qtd} un.`}
+        </Button>
+
+        {participando && (
+          <button
+            type="button"
+            onClick={() => definirAdesao(compra.id, 0)}
+            className="mt-2 w-full font-ui text-sm font-medium text-muted-foreground transition-colors hover:text-destructive"
           >
-            Entrar com {sugestao} un.
-          </Button>
+            Sair da coletiva
+          </button>
         )}
       </div>
     </article>
