@@ -26,19 +26,17 @@ export function SiteNav() {
 
         <nav className="flex items-center gap-1">
           <Link
-            href="/app/dashboard"
-            aria-current={
-              pathname.startsWith("/app/dashboard") ? "page" : undefined
-            }
+            href="/app"
+            aria-current={pathname === "/app" ? "page" : undefined}
             className={cn(
-              "mr-1 flex items-center gap-1.5 rounded-md px-3 py-1.5 font-ui text-sm font-semibold transition-colors",
-              pathname.startsWith("/app/dashboard")
+              "flex items-center gap-1.5 rounded-md px-3 py-1.5 font-ui text-sm font-semibold transition-colors",
+              pathname === "/app"
                 ? "bg-primary text-primary-foreground"
                 : "text-creme/80 hover:bg-white/10 hover:text-creme",
             )}
           >
             <LayoutDashboard className="size-4" aria-hidden />
-            Painel
+            Início
           </Link>
           {CAMADAS.map((c) => {
             const ativo = pathname.startsWith(c.href);
@@ -47,24 +45,15 @@ export function SiteNav() {
                 key={c.href}
                 href={c.href}
                 aria-current={ativo ? "page" : undefined}
+                title={c.legenda}
                 className={cn(
-                  "group flex flex-col rounded-md px-3 py-1.5 font-ui transition-colors",
+                  "rounded-md px-3 py-1.5 font-ui text-sm font-semibold transition-colors",
                   ativo
                     ? "bg-primary text-primary-foreground"
                     : "text-creme/80 hover:bg-white/10 hover:text-creme",
                 )}
               >
-                <span className="text-sm font-semibold leading-tight">
-                  {c.rotulo}
-                </span>
-                <span
-                  className={cn(
-                    "text-[11px] uppercase tracking-wider",
-                    ativo ? "text-accent" : "text-creme/50",
-                  )}
-                >
-                  {c.camada}
-                </span>
+                {c.rotulo}
               </Link>
             );
           })}
