@@ -15,8 +15,8 @@ export function AvisoPerfil() {
     <div className="mt-6 flex items-center gap-3 rounded-lg border border-accent/50 bg-accent/10 p-4">
       <Store className="size-5 shrink-0 text-primary" aria-hidden />
       <p className="flex-1 font-body text-sm text-foreground">
-        Complete o <strong className="font-semibold">perfil da sua loja</strong>{" "}
-        para o TREND ajustar quantidade e aderência ao seu público.
+        <strong className="font-semibold">Passo 0:</strong> complete o perfil da
+        sua loja para a trilha ajustar quantidade e aderência ao seu público.
       </p>
       <Link
         href="/app/onboarding"
