@@ -4,7 +4,9 @@ import { useMemo, useState } from "react";
 
 import { AvisoPerfil } from "@/components/aviso-perfil";
 import { CamadaHeader } from "@/components/camada-header";
+import { ProximoPasso } from "@/components/proximo-passo";
 import { SinalCard } from "@/components/sinal-card";
+import { CAMADAS } from "@/lib/navigation";
 import { useLoja } from "@/lib/loja/store";
 import { listarSinais } from "@/lib/sinais/fonte";
 import { FONTES, type FonteSinal } from "@/lib/sinais/tipos";
@@ -14,6 +16,7 @@ type FiltroFonte = FonteSinal | "todas";
 export default function DescobrirPage() {
   const { loja } = useLoja();
   const sinais = listarSinais();
+  const camada = CAMADAS.find((c) => c.passo === 1)!;
 
   const [fonte, setFonte] = useState<FiltroFonte>("todas");
   const [soAderentes, setSoAderentes] = useState(false);
@@ -37,11 +40,7 @@ export default function DescobrirPage() {
 
   return (
     <div>
-      <CamadaHeader
-        camada="Sinal"
-        titulo="Descobrir"
-        descricao="Detecção de sinal de tendência em formação — do público da sua loja, das redes e dos fornecedores bem pontuados, tudo num só lugar. Isto é sinal detectado, não previsão."
-      />
+      <CamadaHeader camada={camada} />
       <AvisoPerfil />
 
       {/* Filtros */}
@@ -81,6 +80,7 @@ export default function DescobrirPage() {
           ))}
         </div>
       )}
+      <ProximoPasso passoAtual={1} />
     </div>
   );
 }
