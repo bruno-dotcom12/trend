@@ -5,13 +5,16 @@ import { useMemo } from "react";
 import { AvisoPerfil } from "@/components/aviso-perfil";
 import { CamadaHeader } from "@/components/camada-header";
 import { PecaDecisaoCard } from "@/components/peca-decisao-card";
+import { ProximoPasso } from "@/components/proximo-passo";
 import { calcularScore } from "@/lib/engine";
 import { useLoja } from "@/lib/loja/store";
+import { CAMADAS } from "@/lib/navigation";
 import { listarPecas } from "@/lib/pecas/fonte";
 
 export default function CorrigirPage() {
   const { loja } = useLoja();
   const pecas = listarPecas();
+  const camada = CAMADAS.find((c) => c.passo === 2)!;
 
   // Ordena por score (motor) desc; aderentes ao nicho da loja sobem no empate.
   const lista = useMemo(() => {
@@ -30,11 +33,7 @@ export default function CorrigirPage() {
 
   return (
     <div>
-      <CamadaHeader
-        camada="Decisão"
-        titulo="Corrigir"
-        descricao="O quê e quanto comprar: cada peça candidata com score explicável (0–100), os 3 motivos e a quantidade recomendada para o público da sua loja. O cálculo é determinístico — mesma entrada, mesmo resultado."
-      />
+      <CamadaHeader camada={camada} />
       <AvisoPerfil />
 
       <div className="mt-6 grid gap-5 lg:grid-cols-2">
@@ -47,6 +46,7 @@ export default function CorrigirPage() {
           />
         ))}
       </div>
+      <ProximoPasso passoAtual={2} />
     </div>
   );
 }

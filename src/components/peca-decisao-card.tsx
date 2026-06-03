@@ -98,7 +98,7 @@ export function PecaDecisaoCard({
             <span className="text-[10px] font-medium opacity-80">/100</span>
           </div>
           <p className="mt-1 font-ui text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
-            chance de performar
+            score do sinal
           </p>
         </div>
       </div>
