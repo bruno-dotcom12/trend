@@ -7,6 +7,7 @@ import { CamadaHeader } from "@/components/camada-header";
 import { CompraColetivaCard } from "@/components/compra-coletiva-card";
 import { PreVendaCard } from "@/components/pre-venda-card";
 import { ProximoPasso } from "@/components/proximo-passo";
+import { RoupasEscolhidas } from "@/components/roupas-escolhidas";
 import { quantidadeRecomendada } from "@/lib/engine";
 import { montarEntradaScore } from "@/lib/pecas/score";
 import { CAMADAS } from "@/lib/navigation";
@@ -49,9 +50,10 @@ export default function ComprarPage() {
     <div>
       <CamadaHeader camada={camada} />
       <AvisoPerfil />
+      <RoupasEscolhidas />
 
       {/* Pré-venda */}
-      <section className="mt-10">
+      <section id="pre-venda" className="mt-10 scroll-mt-24">
         <div className="flex items-baseline justify-between gap-4 border-b border-border pb-3">
           <h2 className="font-display text-2xl font-bold text-foreground">
             Pré-venda
@@ -87,7 +89,7 @@ export default function ComprarPage() {
       </section>
 
       {/* Compra coletiva */}
-      <section className="mt-12">
+      <section id="compra-coletiva" className="mt-12 scroll-mt-24">
         <div className="flex items-baseline justify-between gap-4 border-b border-border pb-3">
           <h2 className="font-display text-2xl font-bold text-foreground">
             Compra coletiva
