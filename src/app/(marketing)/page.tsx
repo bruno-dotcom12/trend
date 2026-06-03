@@ -104,13 +104,13 @@ export default function LandingPage() {
           <div className="hidden items-center gap-6 sm:flex">
             <a
               href="#como-funciona"
-              className="font-ui text-sm font-medium text-foreground/80 transition-colors hover:text-foreground"
+              className="font-ui text-sm font-semibold text-primary transition-colors hover:text-primary/75"
             >
               Como funciona
             </a>
             <a
               href="#score"
-              className="font-ui text-sm font-medium text-foreground/80 transition-colors hover:text-foreground"
+              className="font-ui text-sm font-semibold text-primary transition-colors hover:text-primary/75"
             >
               Entenda o score
             </a>
