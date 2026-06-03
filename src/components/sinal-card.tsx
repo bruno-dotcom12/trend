@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { Minus, Sparkles, TrendingDown, TrendingUp } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -41,68 +42,76 @@ export function SinalCard({
   return (
     <article
       className={cn(
-        "flex flex-col rounded-xl border bg-card p-6 transition-colors",
+        "flex flex-col overflow-hidden rounded-xl border bg-card transition-colors",
         aderente ? "border-primary/60" : "border-border",
       )}
     >
-      <div className="flex items-start justify-between gap-3">
-        <div>
-          <p className="font-ui text-xs font-medium uppercase tracking-wider text-muted-foreground">
-            {sinal.categoria}
-          </p>
-          <h3 className="mt-1 font-display text-xl font-bold text-foreground">
-            {sinal.titulo}
-          </h3>
-        </div>
-        <span className="shrink-0 rounded-full border border-border bg-background px-2.5 py-1 font-ui text-xs font-medium text-secondary">
+      {/* Foto real da peça */}
+      <div className="relative aspect-[4/3] w-full overflow-hidden bg-muted">
+        <Image
+          src={`/pecas/${sinal.id}.jpg`}
+          alt={sinal.titulo}
+          fill
+          sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
+          className="object-cover object-center transition-transform duration-500 hover:scale-105"
+        />
+        <span className="absolute right-3 top-3 rounded-full border border-white/20 bg-secondary/80 px-2.5 py-1 font-ui text-xs font-medium text-creme backdrop-blur-sm">
           {FONTES[sinal.fonte].rotulo}
         </span>
+        {aderente && (
+          <span className="absolute left-3 top-3 inline-flex items-center gap-1.5 rounded-full bg-primary/90 px-2.5 py-1 font-ui text-xs font-semibold text-primary-foreground backdrop-blur-sm">
+            <Sparkles className="size-3.5" aria-hidden />
+            aderente
+          </span>
+        )}
       </div>
 
-      {aderente && (
-        <span className="mt-3 inline-flex w-fit items-center gap-1.5 rounded-full bg-primary/10 px-2.5 py-1 font-ui text-xs font-semibold text-primary">
-          <Sparkles className="size-3.5" aria-hidden />
-          aderente ao seu público
-        </span>
-      )}
+      <div className="flex flex-1 flex-col p-5">
+        <p className="font-ui text-xs font-medium uppercase tracking-wider text-muted-foreground">
+          {sinal.categoria}
+        </p>
+        <h3 className="mt-1 font-display text-xl font-bold text-foreground">
+          {sinal.titulo}
+        </h3>
 
-      {/* Barra de força */}
-      <div className="mt-4">
-        <div className="flex items-center justify-between font-ui text-xs">
-          <span className="font-medium text-muted-foreground">
-            Força do sinal
-          </span>
-          <span className="flex items-center gap-1 font-semibold text-foreground">
-            <IconeDirecao
-              className={cn("size-3.5", CLASSE_DIRECAO[sinal.direcao])}
-              aria-hidden
-            />
-            {sinal.forca}
-            <span className="font-normal text-muted-foreground">
-              · {DIRECOES[sinal.direcao].rotulo}
+        {/* Barra de força */}
+        <div className="mt-4">
+          <div className="flex items-center justify-between font-ui text-xs">
+            <span className="font-medium text-muted-foreground">
+              Força do sinal
             </span>
-          </span>
+            <span className="flex items-center gap-1 font-semibold text-foreground">
+              <IconeDirecao
+                className={cn("size-3.5", CLASSE_DIRECAO[sinal.direcao])}
+                aria-hidden
+              />
+              {sinal.forca}
+              <span className="font-normal text-muted-foreground">
+                · {DIRECOES[sinal.direcao].rotulo}
+              </span>
+            </span>
+          </div>
+          <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-muted">
+            <div
+              className={cn("h-full rounded-full", CLASSE_FORCA[faixa])}
+              style={{ width: `${sinal.forca}%` }}
+              role="progressbar"
+              aria-valuenow={sinal.forca}
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-label={`Força do sinal: ${sinal.forca} de 100`}
+            />
+          </div>
         </div>
-        <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-muted">
-          <div
-            className={cn("h-full rounded-full", CLASSE_FORCA[faixa])}
-            style={{ width: `${sinal.forca}%` }}
-            role="progressbar"
-            aria-valuenow={sinal.forca}
-            aria-valuemin={0}
-            aria-valuemax={100}
-            aria-label={`Força do sinal: ${sinal.forca} de 100`}
-          />
-        </div>
+
+        <p className="mt-4 flex-1 font-body text-sm leading-relaxed text-foreground/85">
+          {sinal.contexto}
+        </p>
+
+        <p className="mt-4 border-t border-border pt-3 font-ui text-xs text-muted-foreground">
+          {sinal.horizonte}
+        </p>
       </div>
-
-      <p className="mt-4 flex-1 font-body text-sm leading-relaxed text-foreground/85">
-        {sinal.contexto}
-      </p>
-
-      <p className="mt-4 border-t border-border pt-3 font-ui text-xs text-muted-foreground">
-        {sinal.horizonte}
-      </p>
     </article>
   );
 }

@@ -9,6 +9,7 @@ import {
   ShieldCheck,
   Sparkles,
   TrendingUp,
+  X,
 } from "lucide-react";
 
 import { listarSinais } from "@/lib/sinais/fonte";
@@ -143,18 +144,18 @@ export default function LandingPage() {
           </div>
         </div>
 
-        {/* Ticker de sinais */}
-        <div className="relative border-y border-border bg-secondary py-3 text-secondary-foreground">
+        {/* Ticker de sinais — barra clara e translúcida */}
+        <div className="relative border-y border-border bg-creme/60 py-3 backdrop-blur-sm">
           <div className="flex w-max trend-marquee gap-8 whitespace-nowrap">
             {ticker.map((s, i) => (
               <span
                 key={`${s.id}-${i}`}
-                className="flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-creme/70"
+                className="flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-secondary/70"
               >
-                <TrendingUp className="size-3 text-accent" aria-hidden />
+                <TrendingUp className="size-3 text-primary" aria-hidden />
                 {s.titulo}
-                <span className="text-accent">{s.forca}</span>
-                <span className="text-creme/30">/</span>
+                <span className="font-semibold text-primary">{s.forca}</span>
+                <span className="text-secondary/25">/</span>
               </span>
             ))}
           </div>
@@ -311,14 +312,42 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ===== ANTES / COM O TREND ===== */}
+      {/* ===== COMPARAÇÃO: APOSTAR NO ESCURO vs TREND ===== */}
       <section className="mx-auto w-full max-w-7xl px-6 py-24">
-        <div className="grid gap-6 md:grid-cols-2">
-          <div className="rounded-3xl border border-border bg-card p-8">
-            <p className="font-mono text-[11px] uppercase tracking-[0.25em] text-destructive">
-              Apostar no escuro
-            </p>
-            <ul className="mt-5 space-y-3 font-body text-foreground/80">
+        <div className="mx-auto max-w-2xl text-center">
+          <span className="font-mono text-[11px] uppercase tracking-[0.25em] text-primary">
+            A diferença
+          </span>
+          <h2 className="mt-4 font-display text-4xl font-bold leading-tight text-foreground sm:text-5xl">
+            Apostar no escuro <span className="italic text-muted-foreground">ou</span>{" "}
+            comprar com método
+          </h2>
+        </div>
+
+        <div className="relative mt-14 grid items-stretch gap-6 lg:grid-cols-2 lg:gap-10">
+          {/* VS central */}
+          <div className="absolute left-1/2 top-1/2 z-10 hidden -translate-x-1/2 -translate-y-1/2 lg:block">
+            <span className="flex size-14 items-center justify-center rounded-full border border-border bg-card font-display text-lg font-bold text-foreground shadow-xl">
+              vs
+            </span>
+          </div>
+
+          {/* Apostar no escuro — enfraquecido */}
+          <div className="rounded-3xl border border-border bg-card/60 p-8 opacity-90">
+            <div className="flex items-center gap-3">
+              <span className="flex size-10 items-center justify-center rounded-full bg-destructive/10 text-destructive">
+                <X className="size-5" aria-hidden />
+              </span>
+              <div>
+                <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-destructive">
+                  Sem o TREND
+                </p>
+                <h3 className="font-display text-xl font-bold text-foreground">
+                  Apostar no escuro
+                </h3>
+              </div>
+            </div>
+            <ul className="mt-6 space-y-3.5 font-body text-foreground/70">
               {[
                 "Decide com base no feed do fornecedor",
                 "Compra o lote mínimo inteiro, sozinha",
@@ -326,17 +355,32 @@ export default function LandingPage() {
                 "Confiança que cai a cada coleção encalhada",
               ].map((t) => (
                 <li key={t} className="flex gap-3">
-                  <span className="mt-2 size-1.5 shrink-0 rounded-full bg-destructive" />
+                  <X className="mt-0.5 size-4 shrink-0 text-destructive/70" aria-hidden />
                   {t}
                 </li>
               ))}
             </ul>
           </div>
-          <div className="rounded-3xl border border-primary bg-secondary p-8 text-secondary-foreground">
-            <p className="font-mono text-[11px] uppercase tracking-[0.25em] text-accent">
-              Com o TREND
-            </p>
-            <ul className="mt-5 space-y-3 font-body text-creme/85">
+
+          {/* Com o TREND — elevado e dominante */}
+          <div className="relative overflow-hidden rounded-3xl border-2 border-primary bg-secondary p-8 text-secondary-foreground shadow-2xl shadow-secondary/30 lg:-translate-y-3">
+            <span className="absolute right-6 top-6 rounded-full bg-primary px-3 py-1 font-mono text-[10px] uppercase tracking-[0.15em] text-primary-foreground">
+              o jeito TREND
+            </span>
+            <div className="flex items-center gap-3">
+              <span className="flex size-10 items-center justify-center rounded-full bg-primary/30 text-accent">
+                <Check className="size-5" aria-hidden />
+              </span>
+              <div>
+                <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-accent">
+                  Com o TREND
+                </p>
+                <h3 className="font-display text-xl font-bold text-creme">
+                  Comprar com método
+                </h3>
+              </div>
+            </div>
+            <ul className="mt-6 space-y-3.5 font-body text-creme/90">
               {[
                 "Sinal do seu público + redes + fornecedores num lugar",
                 "Score explicável e quantidade no tamanho do seu caixa",
@@ -379,7 +423,7 @@ export default function LandingPage() {
         <div className="mx-auto flex w-full max-w-7xl flex-col items-center justify-between gap-3 px-6 py-8 font-ui text-sm text-creme/60 sm:flex-row">
           <span className="font-display text-lg font-bold text-creme">TREND</span>
           <span className="font-mono text-xs">
-            protótipo · dados de demonstração · sem dados reais ainda
+            protótipo · dados de demonstração · fotos: Pexels
           </span>
         </div>
       </footer>

@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { Sparkles } from "lucide-react";
 
 import { calcularScore, quantidadeRecomendada } from "@/lib/engine";
@@ -53,10 +54,22 @@ export function PecaDecisaoCard({
   return (
     <article
       className={cn(
-        "flex flex-col rounded-xl border bg-card p-6",
+        "flex flex-col overflow-hidden rounded-xl border bg-card",
         aderente ? "border-primary/60" : "border-border",
       )}
     >
+      {/* Foto real da peça */}
+      <div className="relative aspect-[16/9] w-full overflow-hidden bg-muted">
+        <Image
+          src={`/pecas/${peca.id}.jpg`}
+          alt={peca.titulo}
+          fill
+          sizes="(max-width: 1024px) 100vw, 50vw"
+          className="object-cover object-center"
+        />
+      </div>
+
+      <div className="flex flex-1 flex-col p-6">
       <div className="flex items-start justify-between gap-4">
         <div>
           <p className="font-ui text-xs font-medium uppercase tracking-wider text-muted-foreground">
@@ -142,6 +155,7 @@ export function PecaDecisaoCard({
             </div>
           </div>
         )}
+        </div>
       </div>
     </article>
   );
