@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
+import { AnaliseLoja } from "@/components/analise-loja";
 import { Button } from "@/components/ui/button";
 import { DemoBadge } from "@/components/demo-badge";
 import {
@@ -131,6 +132,18 @@ function FormularioLoja({ inicial }: { inicial: Loja }) {
           aderência de cada peça ao seu público. Você pode editar quando quiser.
         </p>
       </header>
+
+      <div className="mt-8">
+        <AnaliseLoja />
+      </div>
+
+      <div className="mt-8 flex items-center gap-4">
+        <span className="h-px flex-1 bg-border" />
+        <span className="font-ui text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+          ou informe manualmente
+        </span>
+        <span className="h-px flex-1 bg-border" />
+      </div>
 
       <form onSubmit={onSubmit} className="mt-8 space-y-6" noValidate>
         {/* Nicho */}
