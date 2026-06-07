@@ -12,12 +12,12 @@ import {
   X,
 } from "lucide-react";
 
-import { detalharScore } from "@/lib/engine";
-import { FATOR_ROTULO } from "@/lib/engine/config";
+import { calcularScore } from "@/lib/engine";
 import { listarPecas } from "@/lib/pecas/fonte";
 import { montarEntradaScore } from "@/lib/pecas/score";
 import { listarSinais } from "@/lib/sinais/fonte";
 import type { Loja } from "@/lib/loja/tipos";
+import { Revelar } from "@/components/revelar";
 
 const ICONES = [Radar, Scale, ShieldCheck];
 
@@ -36,35 +36,29 @@ const LOJA_DEMO: Loja = {
 // REAL (mesma função que roda no produto), não valores fixos de marketing.
 const PECA_DEMO =
   listarPecas().find((p) => p.id === "saia-midi-plissada") ?? listarPecas()[0];
-const SCORE_DEMO = detalharScore(montarEntradaScore(PECA_DEMO, LOJA_DEMO));
+const SCORE_DEMO = calcularScore(montarEntradaScore(PECA_DEMO, LOJA_DEMO));
 
 const PASSOS = [
   {
-    n: "01",
-    passo: "Passo 1",
-    rotulo: "Descobrir tendências",
-    titulo: "Veja o que está em formação",
+    n: "1",
+    rotulo: "Descubra o que vai vender",
     texto:
-      "Reunimos o sinal do público da sua loja, das redes e dos fornecedores bem pontuados num só lugar. Cada peça vem com força e contexto — para você ver a tendência nascendo, não depois que todo mundo já comprou.",
-    selo: "sinal detectado · nunca previsão",
+      "Reunimos num só lugar o que o público da sua loja, as redes sociais e os bons fornecedores estão pedindo. Você vê a moda surgindo antes de todo mundo comprar.",
+    selo: "veja a moda nascer",
   },
   {
-    n: "02",
-    passo: "Passo 2",
-    rotulo: "Decidir o que comprar",
-    titulo: "Saiba o quê e quanto comprar",
+    n: "2",
+    rotulo: "Saiba quanto comprar",
     texto:
-      "Um score explicável de 0 a 100 com os 3 motivos por trás, e a quantidade recomendada para o tamanho do seu público e do seu caixa. Selecione as peças que quer comprar — elas seguem com você para a próxima etapa.",
-    selo: "score + quantidade + seleção",
+      "Cada peça ganha uma nota de 0 a 100, com 3 motivos em português claro, e a quantidade certa para o tamanho do seu público e do seu caixa. Você escolhe e leva para a próxima etapa.",
+    selo: "nota e quantidade certa",
   },
   {
-    n: "03",
-    passo: "Passo 3",
-    rotulo: "Comprar com método",
-    titulo: "Compre reduzindo a exposição do caixa",
+    n: "3",
+    rotulo: "Compre sem arriscar o caixa",
     texto:
-      "O diferencial. As roupas que você escolheu chegam aqui prontas: valide a demanda com pré-venda antes de pagar o lote e junte pedido com outras lojas para furar o lote mínimo. O capital só sai quando o risco já caiu.",
-    selo: "pré-venda + compra coletiva",
+      "Aqui está o pulo do gato. Teste a procura com uma pré-venda antes de pagar o lote, e junte seu pedido com outras lojas para furar o lote mínimo. O dinheiro só sai quando o risco já caiu.",
+    selo: "pague só quando for seguro",
   },
 ];
 
@@ -79,7 +73,7 @@ export default function LandingPage() {
         {/* Foto de fundo */}
         <Image
           src="/landing/hero-model.jpg"
-          alt="Editorial de moda — modelo em vestido na paleta da marca"
+          alt="Editorial de moda: modelo em vestido na paleta da marca"
           fill
           priority
           sizes="100vw"
@@ -128,56 +122,65 @@ export default function LandingPage() {
         {/* Card flutuante com a headline + preview do produto */}
         <div className="mx-auto flex w-full max-w-7xl px-6 pb-20 pt-6 lg:pb-28 lg:pt-10">
           <div className="trend-rise w-full max-w-xl rounded-[28px] border border-border/70 bg-card/80 p-7 shadow-2xl shadow-secondary/15 backdrop-blur-xl sm:p-9">
-            <p className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
-              <span className="font-semibold text-primary">01 Sinal</span>
-              <ArrowRight className="size-3" aria-hidden />
-              <span className="font-semibold text-primary">02 Decisão</span>
-              <ArrowRight className="size-3" aria-hidden />
-              <span className="font-semibold text-primary">03 Execução</span>
+            <p className="font-ui text-sm font-semibold text-primary">
+              Para a lojista multimarca que repõe estoque no atacado
             </p>
 
-            <h1 className="mt-5 font-display text-5xl font-bold leading-[1.03] tracking-tight text-foreground sm:text-6xl">
+            <h1 className="mt-4 font-display text-5xl font-bold leading-[1.03] tracking-tight text-foreground sm:text-6xl">
               Pare de apostar
               <br />
               no <span className="italic text-primary">escuro</span>.
             </h1>
 
             <p className="mt-5 max-w-md font-body text-lg leading-relaxed text-foreground/80">
-              A infraestrutura que a lojista multimarca usa para repor estoque
-              com método — detecta o sinal, diz{" "}
+              O TREND mostra o que está bombando, calcula{" "}
               <strong className="font-semibold text-foreground">
-                o quê e quanto comprar
+                quanto comprar
               </strong>{" "}
-              sem expor todo o caixa de uma vez.
+              para o seu público e ajuda a comprar sem travar todo o seu caixa de
+              uma vez.
             </p>
+
+            {/* Mini-roteiro: o caminho em 3 passos, em palavras simples */}
+            <div className="mt-6 flex flex-wrap items-center gap-x-2 gap-y-1 font-ui text-sm font-semibold text-secondary/80">
+              <span>Descubra</span>
+              <ArrowRight className="size-4 text-primary" aria-hidden />
+              <span>Decida</span>
+              <ArrowRight className="size-4 text-primary" aria-hidden />
+              <span>Compre sem risco</span>
+            </div>
 
             <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
               <Link
                 href="/app/descobrir"
                 className="group inline-flex items-center justify-center gap-2 rounded-full bg-primary px-6 py-3.5 font-ui text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/20 transition-transform hover:-translate-y-0.5"
               >
-                Entrar no produto
+                Ver como funciona, grátis
                 <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" aria-hidden />
               </Link>
-              <span className="font-mono text-[11px] text-muted-foreground">
-                dados de demonstração · sem cadastro
+              <span className="font-ui text-xs text-muted-foreground">
+                dados de demonstração, sem cadastro
               </span>
             </div>
           </div>
         </div>
 
-        {/* Ticker de sinais — barra clara e translúcida */}
-        <div className="relative border-y border-border bg-creme/60 py-3 backdrop-blur-sm">
+        {/* Ticker de sinais: barra clara e translúcida, com rótulo fixo à esquerda */}
+        <div className="relative flex items-center gap-4 overflow-hidden border-y border-border bg-creme/60 py-3 backdrop-blur-sm">
+          <span className="z-10 hidden shrink-0 items-center gap-1.5 bg-creme/80 pl-6 pr-3 font-ui text-xs font-semibold text-primary sm:flex">
+            <TrendingUp className="size-3.5" aria-hidden />
+            Em alta agora:
+          </span>
           <div className="flex w-max trend-marquee gap-8 whitespace-nowrap">
             {ticker.map((s, i) => (
               <span
                 key={`${s.id}-${i}`}
-                className="flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-secondary/70"
+                className="flex items-center gap-2 font-body text-sm text-secondary/70"
               >
-                <TrendingUp className="size-3 text-primary" aria-hidden />
                 {s.titulo}
-                <span className="font-semibold text-primary">{s.forca}</span>
-                <span className="text-secondary/25">/</span>
+                <span className="rounded-full bg-primary/10 px-2 py-0.5 font-ui text-xs font-semibold text-primary">
+                  força {s.forca}
+                </span>
               </span>
             ))}
           </div>
@@ -186,28 +189,29 @@ export default function LandingPage() {
 
       {/* ===== COMO FUNCIONA ===== */}
       <section id="como-funciona" className="mx-auto w-full max-w-7xl px-6 py-24">
-        <div className="max-w-2xl">
+        <Revelar className="max-w-2xl">
           <span className="font-mono text-[11px] uppercase tracking-[0.25em] text-primary">
             Como funciona
           </span>
           <h2 className="mt-4 font-display text-4xl font-bold leading-tight text-foreground sm:text-5xl">
-            Do sinal à compra com método, em três camadas
+            Três passos, do palpite à compra certa
           </h2>
           <p className="mt-4 font-body text-lg text-muted-foreground">
-            Cada camada resolve uma parte do “apostar no escuro”. A terceira é o
-            herói — onde o capital deixa de ficar exposto.
+            Cada passo tira um pouco do risco da sua próxima compra. O terceiro é
+            o que muda o jogo: é onde o seu dinheiro para de ficar parado em
+            estoque que não gira.
           </p>
-        </div>
+        </Revelar>
 
         <div className="mt-14 grid gap-6 lg:grid-cols-3">
           {PASSOS.map((p, i) => {
             const Icone = ICONES[i];
-            const heroi = p.n === "03";
+            const heroi = p.n === "3";
             return (
+              <Revelar key={p.n} delay={i * 0.1} className="h-full">
               <div
-                key={p.n}
                 className={[
-                  "flex flex-col rounded-3xl border p-7 transition-transform hover:-translate-y-1",
+                  "flex h-full flex-col rounded-3xl border p-7 transition-transform hover:-translate-y-1",
                   heroi
                     ? "border-primary bg-secondary text-secondary-foreground shadow-xl shadow-secondary/20"
                     : "border-border bg-card",
@@ -216,8 +220,10 @@ export default function LandingPage() {
                 <div className="flex items-center justify-between">
                   <span
                     className={[
-                      "font-mono text-sm font-semibold",
-                      heroi ? "text-accent" : "text-primary",
+                      "flex size-9 items-center justify-center rounded-full font-display text-lg font-bold",
+                      heroi
+                        ? "bg-accent text-secondary"
+                        : "bg-primary/10 text-primary",
                     ].join(" ")}
                   >
                     {p.n}
@@ -232,29 +238,13 @@ export default function LandingPage() {
                   </div>
                 </div>
 
-                <p
-                  className={[
-                    "mt-6 font-ui text-xs font-semibold uppercase tracking-[0.2em]",
-                    heroi ? "text-accent" : "text-muted-foreground",
-                  ].join(" ")}
-                >
-                  {p.passo}
-                </p>
-                <h3 className="mt-2 font-display text-2xl font-bold">
+                <h3 className="mt-6 font-display text-2xl font-bold">
                   {p.rotulo}
                 </h3>
                 <p
                   className={[
-                    "mt-1 font-ui text-sm font-semibold",
-                    heroi ? "text-creme/90" : "text-foreground/70",
-                  ].join(" ")}
-                >
-                  {p.titulo}
-                </p>
-                <p
-                  className={[
-                    "mt-3 flex-1 font-body text-sm leading-relaxed",
-                    heroi ? "text-creme/80" : "text-foreground/80",
+                    "mt-3 flex-1 font-body text-base leading-relaxed",
+                    heroi ? "text-creme/85" : "text-foreground/80",
                   ].join(" ")}
                 >
                   {p.texto}
@@ -262,7 +252,7 @@ export default function LandingPage() {
 
                 <span
                   className={[
-                    "mt-6 inline-flex w-fit items-center gap-1.5 rounded-full px-3 py-1 font-mono text-[11px]",
+                    "mt-6 inline-flex w-fit items-center gap-1.5 rounded-full px-3 py-1 font-ui text-xs font-semibold",
                     heroi
                       ? "bg-primary/30 text-creme"
                       : "bg-muted text-muted-foreground",
@@ -272,6 +262,7 @@ export default function LandingPage() {
                   {p.selo}
                 </span>
               </div>
+              </Revelar>
             );
           })}
         </div>
@@ -280,31 +271,26 @@ export default function LandingPage() {
       {/* ===== POR DENTRO DO SCORE ===== */}
       <section id="score" className="scroll-mt-20 border-y border-border bg-muted/40">
         <div className="mx-auto grid w-full max-w-7xl items-center gap-12 px-6 py-20 lg:grid-cols-2">
-          <div>
-            <span className="font-mono text-[11px] uppercase tracking-[0.25em] text-primary">
-              Como o score funciona
-            </span>
-            <h2 className="mt-4 font-display text-4xl font-bold leading-tight text-foreground">
-              Um número que você consegue explicar
+          <Revelar>
+            <h2 className="font-display text-4xl font-bold leading-tight text-foreground">
+              Uma nota que você explica para qualquer um
             </h2>
             <p className="mt-4 font-body text-lg text-muted-foreground">
-              O score combina{" "}
+              Cada peça ganha uma nota de{" "}
+              <strong className="font-semibold text-foreground">0 a 100</strong>.
+              Junto com a nota, você vê os{" "}
               <strong className="font-semibold text-foreground">
-                oito variáveis
+                3 motivos
               </strong>{" "}
-              com pesos fixos: o engajamento e a busca da peça, a força, a
-              direção e a confiança da fonte do sinal, e — quando você completa o
-              perfil — a aderência ao seu nicho e o encaixe de preço no seu
-              ticket. Saturação alta derruba a nota.
+              por trás dela, escritos em português claro. Sem caixa-preta, sem
+              “a inteligência artificial mandou”.
             </p>
             <p className="mt-4 font-body text-lg text-muted-foreground">
-              Nada de “a IA mandou”: a conta é determinística (mesma entrada,
-              mesmo resultado) e os{" "}
-              <strong className="font-semibold text-foreground">3 motivos</strong>{" "}
-              de maior peso aparecem em texto claro. Com o perfil preenchido, o
-              número deixa de ser genérico e vira{" "}
+              A conta é sempre a mesma: os mesmos números entram, a mesma nota
+              sai. E quando você preenche o perfil da sua loja, a nota deixa de
+              ser genérica e vira{" "}
               <strong className="font-semibold text-foreground">
-                o seu score
+                a sua nota
               </strong>
               .
             </p>
@@ -315,62 +301,49 @@ export default function LandingPage() {
               Ver a tela de decisão
               <ArrowRight className="size-4" aria-hidden />
             </Link>
-          </div>
+          </Revelar>
 
-          {/* Mini-visual do motor — números puxados do motor real */}
-          <div className="rounded-3xl border border-border bg-card p-7 shadow-xl shadow-secondary/5">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="font-ui text-sm font-semibold text-foreground">
-                  {PECA_DEMO.titulo}
-                </p>
-                <p className="font-mono text-[11px] uppercase tracking-wider text-primary">
-                  score pra você
-                </p>
-              </div>
-              <span className="flex size-14 flex-col items-center justify-center rounded-full bg-primary font-display text-primary-foreground">
-                <span className="text-xl font-bold leading-none">
+          {/* Exemplo real: nota e os 3 motivos vêm do mesmo motor que roda no produto */}
+          <Revelar delay={0.12} className="rounded-3xl border border-border bg-card p-7 shadow-xl shadow-secondary/5">
+            <div className="flex items-center gap-5">
+              <span className="flex size-20 shrink-0 flex-col items-center justify-center rounded-full bg-primary font-display text-primary-foreground">
+                <span className="text-3xl font-bold leading-none">
                   {SCORE_DEMO.score}
                 </span>
-                <span className="text-[9px] opacity-80">/100</span>
+                <span className="text-[10px] opacity-80">de 100</span>
               </span>
+              <div>
+                <p className="font-display text-xl font-bold text-foreground">
+                  {PECA_DEMO.titulo}
+                </p>
+                <p className="mt-0.5 font-body text-sm text-muted-foreground">
+                  nota para uma loja como a sua
+                </p>
+              </div>
             </div>
-            <div className="mt-6 space-y-3">
-              {SCORE_DEMO.fatores.map((f) => (
-                <div key={f.fator}>
-                  <div className="flex items-center justify-between font-mono text-xs">
-                    <span className="text-muted-foreground">
-                      {FATOR_ROTULO[f.fator]}
-                      <span className="ml-1 text-muted-foreground/50">
-                        peso {Math.round(f.peso * 100)}%
-                      </span>
-                    </span>
-                    <span className="font-semibold text-foreground">
-                      {Math.round(f.valor)}
-                    </span>
-                  </div>
-                  <div className="mt-1 h-2 overflow-hidden rounded-full bg-muted">
-                    <div
-                      className="trend-grow h-full rounded-full bg-accent"
-                      style={{ width: `${Math.round(f.valor)}%` }}
-                    />
-                  </div>
-                </div>
+
+            <p className="mt-7 font-ui text-xs font-semibold uppercase tracking-wider text-primary">
+              Por que essa nota?
+            </p>
+            <ol className="mt-3 space-y-3">
+              {SCORE_DEMO.motivos.map((m, i) => (
+                <li key={m.fator} className="flex items-start gap-3">
+                  <span className="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full bg-primary/10 font-ui text-xs font-bold text-primary">
+                    {i + 1}
+                  </span>
+                  <p className="font-body text-sm leading-relaxed text-foreground/85">
+                    {m.texto}
+                  </p>
+                </li>
               ))}
-            </div>
-            <div className="mt-6 flex items-start gap-2 rounded-xl bg-muted/70 p-3">
-              <Check className="mt-0.5 size-4 shrink-0 text-primary" aria-hidden />
-              <p className="font-body text-xs text-foreground/80">
-                {SCORE_DEMO.fatores[0].texto}
-              </p>
-            </div>
-          </div>
+            </ol>
+          </Revelar>
         </div>
       </section>
 
       {/* ===== COMPARAÇÃO: APOSTAR NO ESCURO vs TREND ===== */}
       <section className="mx-auto w-full max-w-7xl px-6 py-24">
-        <div className="mx-auto max-w-2xl text-center">
+        <Revelar className="mx-auto max-w-2xl text-center">
           <span className="font-mono text-[11px] uppercase tracking-[0.25em] text-primary">
             A diferença
           </span>
@@ -378,9 +351,9 @@ export default function LandingPage() {
             Apostar no escuro <span className="italic text-muted-foreground">ou</span>{" "}
             comprar com método
           </h2>
-        </div>
+        </Revelar>
 
-        <div className="relative mt-14 grid items-stretch gap-6 lg:grid-cols-2 lg:gap-10">
+        <Revelar className="relative mt-14 grid items-stretch gap-6 lg:grid-cols-2 lg:gap-10">
           {/* VS central */}
           <div className="absolute left-1/2 top-1/2 z-10 hidden -translate-x-1/2 -translate-y-1/2 lg:block">
             <span className="flex size-14 items-center justify-center rounded-full border border-border bg-card font-display text-lg font-bold text-foreground shadow-xl">
@@ -388,7 +361,7 @@ export default function LandingPage() {
             </span>
           </div>
 
-          {/* Apostar no escuro — enfraquecido */}
+          {/* Apostar no escuro: enfraquecido */}
           <div className="rounded-3xl border border-border bg-card/60 p-8 opacity-90">
             <div className="flex items-center gap-3">
               <span className="flex size-10 items-center justify-center rounded-full bg-destructive/10 text-destructive">
@@ -418,7 +391,7 @@ export default function LandingPage() {
             </ul>
           </div>
 
-          {/* Com o TREND — elevado e dominante */}
+          {/* Com o TREND: elevado e dominante */}
           <div className="relative overflow-hidden rounded-3xl border-2 border-primary bg-secondary p-8 text-secondary-foreground shadow-2xl shadow-secondary/30 lg:-translate-y-3">
             <span className="absolute right-6 top-6 rounded-full bg-primary px-3 py-1 font-mono text-[10px] uppercase tracking-[0.15em] text-primary-foreground">
               o jeito TREND
@@ -450,36 +423,37 @@ export default function LandingPage() {
               ))}
             </ul>
           </div>
-        </div>
+        </Revelar>
       </section>
 
       {/* ===== CTA FINAL ===== */}
       <section className="trend-grain relative overflow-hidden border-t border-border">
         <div className="trend-aurora absolute inset-0 opacity-80" aria-hidden />
-        <div className="relative mx-auto w-full max-w-4xl px-6 py-24 text-center">
+        <Revelar className="relative mx-auto w-full max-w-4xl px-6 py-24 text-center">
           <h2 className="font-display text-4xl font-bold leading-tight text-foreground sm:text-5xl">
             Sua próxima compra não precisa ser um palpite
           </h2>
           <p className="mx-auto mt-4 max-w-xl font-body text-lg text-muted-foreground">
-            Comece pelo sinal, veja o score, compre com método. Tudo com dados de
-            demonstração — sem cadastro.
+            Descubra o que vai vender, veja a nota de cada peça e compre sem
+            arriscar o caixa. Tudo com dados de demonstração, sem precisar de
+            cadastro.
           </p>
           <Link
             href="/app/descobrir"
             className="group mt-9 inline-flex items-center gap-2 rounded-full bg-primary px-8 py-4 font-ui text-base font-semibold text-primary-foreground shadow-xl shadow-primary/20 transition-transform hover:-translate-y-0.5"
           >
-            Entrar no produto
+            Ver como funciona, grátis
             <ArrowRight className="size-5 transition-transform group-hover:translate-x-1" aria-hidden />
           </Link>
-        </div>
+        </Revelar>
       </section>
 
       {/* ===== FOOTER ===== */}
       <footer className="border-t border-border bg-secondary text-secondary-foreground">
         <div className="mx-auto flex w-full max-w-7xl flex-col items-center justify-between gap-3 px-6 py-8 font-ui text-sm text-creme/60 sm:flex-row">
           <span className="font-display text-lg font-bold text-creme">TREND</span>
-          <span className="font-mono text-xs">
-            protótipo · dados de demonstração · fotos: Pexels
+          <span className="font-ui text-xs">
+            Protótipo com dados de demonstração. Fotos: Pexels.
           </span>
         </div>
       </footer>
