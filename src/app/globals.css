@@ -96,6 +96,51 @@
   --sidebar-ring: #c8a878;
 }
 
+/* =====================================================================
+   Pele "OPS" — autoridade corporativa fria + futurista (escopada à landing)
+   Aplicada via .trend-ops em (marketing)/layout.tsx. O PRODUTO continua
+   usando o tema quente da marca acima — nada aqui vaza para /app.
+   ===================================================================== */
+.trend-ops {
+  --background: #ffffff; /* branco WGSN */
+  --foreground: #0a0d14; /* quase preto — autoridade */
+  --card: #f5f6f8; /* painel cinza claro (cards WGSN) */
+  --card-foreground: #0a0d14;
+  --popover: #ffffff;
+  --popover-foreground: #0a0d14;
+  --primary: #0a0d14; /* AÇÃO = preto (CTAs estilo WGSN = autoridade) */
+  --primary-foreground: #ffffff;
+  --secondary: #f6f7f9; /* faixas claras alternadas */
+  --secondary-foreground: #0a0d14;
+  --muted: #f0f1f4;
+  --muted-foreground: #545b67; /* texto secundário cinza (AA em branco) */
+  --accent: #0e7490; /* CIANO profundo = sinal/futurismo (accent, AA em branco) */
+  --accent-foreground: #ffffff;
+  --destructive: #c0392b;
+  --border: #e5e7eb; /* hairline clara */
+  --input: #e5e7eb;
+  --ring: #0e7490;
+  --radius: 1rem; /* cantos suaves estilo WGSN */
+
+  /* Fontes frias só na landing: grotesca + mono de dados */
+  --font-display: var(--font-geist);
+  --font-body: var(--font-geist);
+  --font-ui: var(--font-geist);
+
+  color-scheme: light;
+}
+
+/* Foto editorial em cor, nítida e com leve pop (estilo Kokonut) */
+.ops-photo {
+  filter: contrast(1.05) saturate(1.08);
+}
+
+/* Tag de dado monoespaçada (números, scores, rótulos técnicos) */
+.ops-mono {
+  font-family: var(--font-geist-mono), ui-monospace, "SF Mono", Menlo, monospace;
+  font-feature-settings: "tnum" 1;
+}
+
 .dark {
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
@@ -194,7 +239,7 @@
   }
 }
 .trend-marquee {
-  animation: trend-marquee 32s linear infinite;
+  animation: trend-marquee 80s linear infinite;
 }
 
 @keyframes trend-grow {

@@ -7,8 +7,6 @@ import {
   Radar,
   Scale,
   ShieldCheck,
-  Sparkles,
-  TrendingUp,
   X,
 } from "lucide-react";
 
@@ -18,8 +16,6 @@ import { montarEntradaScore } from "@/lib/pecas/score";
 import { listarSinais } from "@/lib/sinais/fonte";
 import type { Loja } from "@/lib/loja/tipos";
 import { Revelar } from "@/components/revelar";
-
-const ICONES = [Radar, Scale, ShieldCheck];
 
 // Loja de demonstração para mostrar o score JÁ personalizado na landing.
 const LOJA_DEMO: Loja = {
@@ -32,33 +28,37 @@ const LOJA_DEMO: Loja = {
   capitalDisponivel: 6000,
 };
 
-// Peça-vitrine do explicador "por dentro do score": números puxados do MOTOR
-// REAL (mesma função que roda no produto), não valores fixos de marketing.
+// Peça-vitrine do explicador de score: números puxados do MOTOR REAL
+// (mesma função que roda no produto), não valores fixos de marketing.
 const PECA_DEMO =
   listarPecas().find((p) => p.id === "saia-midi-plissada") ?? listarPecas()[0];
 const SCORE_DEMO = calcularScore(montarEntradaScore(PECA_DEMO, LOJA_DEMO));
 
-const PASSOS = [
+// As três camadas do sistema. A execução é o diferencial, por isso ganha destaque.
+const CAMADAS = [
   {
-    n: "1",
-    rotulo: "Descubra o que vai vender",
+    icone: Radar,
+    titulo: "Detectar o sinal",
     texto:
-      "Reunimos num só lugar o que o público da sua loja, as redes sociais e os bons fornecedores estão pedindo. Você vê a moda surgindo antes de todo mundo comprar.",
-    selo: "veja a moda nascer",
+      "Público da sua loja, redes e fornecedores bem pontuados num só painel. Você vê a tendência se formar antes de o lote virar aposta.",
+    rotulo: "sinal",
+    destaque: false,
   },
   {
-    n: "2",
-    rotulo: "Saiba quanto comprar",
+    icone: Scale,
+    titulo: "Decidir a compra",
     texto:
-      "Cada peça ganha uma nota de 0 a 100, com 3 motivos em português claro, e a quantidade certa para o tamanho do seu público e do seu caixa. Você escolhe e leva para a próxima etapa.",
-    selo: "nota e quantidade certa",
+      "Cada peça recebe um score de 0 a 100, os 3 motivos por trás dele e a quantidade calculada para o tamanho do seu público e do seu caixa.",
+    rotulo: "decisão",
+    destaque: false,
   },
   {
-    n: "3",
-    rotulo: "Compre sem arriscar o caixa",
+    icone: ShieldCheck,
+    titulo: "Executar sem risco",
     texto:
-      "Aqui está o pulo do gato. Teste a procura com uma pré-venda antes de pagar o lote, e junte seu pedido com outras lojas para furar o lote mínimo. O dinheiro só sai quando o risco já caiu.",
-    selo: "pague só quando for seguro",
+      "O diferencial. Pré-venda valida a demanda antes de você pagar o lote, e a compra coletiva fura o lote mínimo junto com outras lojas.",
+    rotulo: "execução",
+    destaque: true,
   },
 ];
 
@@ -67,377 +67,331 @@ export default function LandingPage() {
   const ticker = [...sinais, ...sinais]; // duplicado p/ marquee contínuo
 
   return (
-    <div className="min-h-full bg-background text-foreground">
-      {/* ===== HERO (foto full-bleed + card flutuante) ===== */}
-      <section className="relative isolate overflow-hidden">
-        {/* Foto de fundo */}
-        <Image
-          src="/landing/hero-model.jpg"
-          alt="Editorial de moda: modelo em vestido na paleta da marca"
-          fill
-          priority
-          sizes="100vw"
-          className="-z-10 object-cover object-[72%_top]"
-        />
-        {/* Scrim suave à esquerda: garante legibilidade do card sobre a parede creme */}
-        <div
-          className="absolute inset-0 -z-10 bg-gradient-to-r from-creme/85 via-creme/45 to-transparent"
-          aria-hidden
-        />
-        <div
-          className="absolute inset-0 -z-10 bg-gradient-to-t from-creme/55 via-transparent to-creme/25"
-          aria-hidden
-        />
-
-        {/* Nav sobre a foto */}
-        <nav className="mx-auto flex w-full max-w-7xl items-center justify-between px-6 py-6">
-          <span className="font-display text-2xl font-bold tracking-tight text-foreground">
-            TREND
-          </span>
-          {/* Links centrais, agrupados no meio do nav */}
-          <div className="hidden items-center gap-6 sm:flex">
-            <a
-              href="#como-funciona"
-              className="font-ui text-sm font-semibold text-primary transition-colors hover:text-primary/75"
+    <>
+      {/* ===================== HERO (editorial estilo Kokonut) ===================== */}
+      <section className="relative flex flex-col lg:min-h-[100dvh]">
+        {/* Navegação (uma linha, sobre o branco) */}
+        <nav className="relative z-10">
+          <div className="mx-auto flex h-[72px] w-full max-w-7xl items-center justify-between px-6">
+            <span className="ops-mono text-sm font-semibold uppercase tracking-[0.34em] text-foreground">
+              TREND
+            </span>
+            <div className="hidden items-center gap-8 md:flex">
+              <a
+                href="#sistema"
+                className="text-sm font-semibold text-foreground [text-shadow:0_1px_3px_rgb(0_0_0/0.25)] transition-colors hover:text-accent"
+              >
+                Sistema
+              </a>
+              <a
+                href="#score"
+                className="text-sm font-semibold text-foreground [text-shadow:0_1px_3px_rgb(0_0_0/0.25)] transition-colors hover:text-accent"
+              >
+                Score
+              </a>
+            </div>
+            <Link
+              href="/app/descobrir"
+              className="inline-flex items-center gap-1.5 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-transform hover:-translate-y-0.5"
             >
-              Como funciona
-            </a>
-            <a
-              href="#score"
-              className="font-ui text-sm font-semibold text-primary transition-colors hover:text-primary/75"
-            >
-              Entenda o score
-            </a>
+              Acessar plataforma
+              <ArrowUpRight className="size-4" strokeWidth={2} aria-hidden />
+            </Link>
           </div>
-
-          <Link
-            href="/app/descobrir"
-            className="inline-flex items-center gap-1.5 rounded-full bg-foreground px-4 py-2 font-ui text-sm font-semibold text-background transition-transform hover:-translate-y-0.5"
-          >
-            Entrar
-            <ArrowUpRight className="size-4" aria-hidden />
-          </Link>
         </nav>
 
-        {/* Card flutuante com a headline + preview do produto */}
-        <div className="mx-auto flex w-full max-w-7xl px-6 pb-28 pt-10 lg:pb-40 lg:pt-16">
-          <div className="trend-rise w-full max-w-xl rounded-[28px] border border-border/70 bg-card/80 p-7 shadow-2xl shadow-secondary/15 backdrop-blur-xl sm:p-9">
-            <p className="font-ui text-sm font-semibold text-primary">
-              Para a lojista multimarca que repõe estoque no atacado
+        {/* Editorial: texto arejado à esquerda, foto colorida dominante sangrando à direita */}
+        <div className="flex flex-1 flex-col lg:flex-row">
+          {/* Coluna de texto — alinhada à sarjeta do container, bem espaçada */}
+          <div className="trend-rise flex flex-col justify-center py-10 pl-6 pr-6 lg:w-[44%] lg:py-16 lg:pl-[calc((100vw-80rem)/2+1.5rem)] lg:pr-12">
+            <p className="ops-mono text-xs uppercase tracking-[0.28em] text-accent">
+              Inteligência de compra · varejo de moda
             </p>
-
-            <h1 className="mt-4 font-display text-5xl font-bold leading-[1.03] tracking-tight text-foreground sm:text-6xl">
-              Pare de apostar
-              <br />
-              no <span className="italic text-primary">escuro</span>.
+            <h1 className="mt-5 text-4xl font-semibold leading-[1.06] tracking-tight text-foreground sm:text-5xl lg:text-[4.25rem]">
+              O sistema operacional da sua próxima compra.
             </h1>
-
-            <p className="mt-5 max-w-md font-body text-lg leading-relaxed text-foreground/80">
-              O TREND mostra o que está bombando, calcula{" "}
-              <strong className="font-semibold text-foreground">
-                quanto comprar
-              </strong>{" "}
-              para o seu público e ajuda a comprar sem travar todo o seu caixa de
-              uma vez.
+            <p className="mt-5 max-w-md text-base leading-relaxed text-muted-foreground sm:text-lg">
+              Detecção de sinal, score de compra explicável e execução sem
+              travar o caixa. Tudo numa só plataforma.
             </p>
-
             <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
               <Link
                 href="/app/descobrir"
-                className="group inline-flex items-center justify-center gap-2 rounded-full bg-primary px-6 py-3.5 font-ui text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/20 transition-transform hover:-translate-y-0.5"
+                className="group inline-flex items-center justify-center gap-2 rounded-full bg-primary px-6 py-3.5 text-sm font-semibold text-primary-foreground transition-transform hover:-translate-y-0.5"
               >
-                Ver como funciona
-                <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" aria-hidden />
+                Acessar plataforma
+                <ArrowRight
+                  className="size-4 transition-transform group-hover:translate-x-0.5"
+                  aria-hidden
+                />
               </Link>
-              <span className="font-ui text-xs text-muted-foreground">
-                dados de demonstração, sem cadastro
-              </span>
+              <a
+                href="#sistema"
+                className="inline-flex items-center justify-center gap-2 rounded-full border border-border px-6 py-3.5 text-sm font-semibold text-foreground transition-colors hover:border-foreground"
+              >
+                Ver o sistema
+              </a>
             </div>
           </div>
-        </div>
 
-        {/* Ticker de sinais: barra clara e translúcida, com rótulo fixo à esquerda */}
-        <div className="relative flex items-center gap-4 overflow-hidden border-y border-border bg-creme/60 py-3 backdrop-blur-sm">
-          <span className="z-10 hidden shrink-0 items-center gap-1.5 bg-creme/80 pl-6 pr-3 font-ui text-xs font-semibold text-primary sm:flex">
-            <TrendingUp className="size-3.5" aria-hidden />
-            Em alta agora:
-          </span>
-          <div className="flex w-max trend-marquee gap-8 whitespace-nowrap">
-            {ticker.map((s, i) => (
-              <span
-                key={`${s.id}-${i}`}
-                className="flex items-center gap-2 font-body text-sm text-secondary/70"
-              >
-                {s.titulo}
-                <span className="rounded-full bg-primary/10 px-2 py-0.5 font-ui text-xs font-semibold text-primary">
-                  score {s.forca}
-                </span>
-              </span>
-            ))}
+          {/* Foto editorial: colorida, nítida, grande, sangrando até a borda direita */}
+          <div className="relative px-6 pb-10 lg:flex-1 lg:px-0 lg:pb-0">
+            <div className="relative aspect-[4/5] max-h-[72vh] w-full overflow-hidden rounded-2xl bg-muted sm:aspect-[16/11] lg:aspect-auto lg:h-full lg:max-h-none lg:rounded-l-3xl lg:rounded-r-none">
+              <Image
+                src="/landing/hero-editorial.jpg"
+                alt="Editorial de moda em cor: dupla de modelos"
+                fill
+                priority
+                quality={95}
+                sizes="(max-width: 1024px) 100vw, 56vw"
+                className="ops-photo object-cover object-[50%_18%]"
+              />
+            </div>
           </div>
         </div>
       </section>
 
-      {/* ===== COMO FUNCIONA ===== */}
-      <section id="como-funciona" className="mx-auto w-full max-w-7xl px-6 py-24">
-        <Revelar className="max-w-2xl">
-          <span className="font-mono text-[11px] uppercase tracking-[0.25em] text-primary">
-            Como funciona
+      {/* ===================== FAIXA DE SINAIS (terminal claro) ===================== */}
+      <div className="relative flex items-center gap-4 overflow-hidden border-y border-border bg-secondary py-3">
+        <span className="z-10 hidden shrink-0 items-center gap-2 bg-secondary pl-6 pr-4 sm:flex">
+          <span className="size-1.5 rounded-full bg-accent" aria-hidden />
+          <span className="ops-mono text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
+            Em alta
           </span>
-          <h2 className="mt-4 font-display text-4xl font-bold leading-tight text-foreground sm:text-5xl">
-            Três frentes contra a aposta no escuro
-          </h2>
-          <p className="mt-4 font-body text-lg text-muted-foreground">
-            Cada frente tira um pouco do risco da sua próxima compra — use na
-            ordem que quiser. A execução é a que muda o jogo: é onde o seu
-            dinheiro para de ficar parado em estoque que não gira.
-          </p>
-        </Revelar>
+        </span>
+        <div className="trend-marquee flex w-max gap-10 whitespace-nowrap">
+          {ticker.map((s, i) => (
+            <span
+              key={`${s.id}-${i}`}
+              className="flex items-center gap-2.5 text-sm text-foreground/75"
+            >
+              {s.titulo}
+              <span className="ops-mono text-xs font-semibold text-accent">
+                {String(s.forca).padStart(2, "0")}
+              </span>
+            </span>
+          ))}
+        </div>
+      </div>
 
-        <div className="mt-14 grid gap-6 lg:grid-cols-3">
-          {PASSOS.map((p, i) => {
-            const Icone = ICONES[i];
-            const heroi = p.n === "3";
-            return (
-              <Revelar key={p.n} delay={i * 0.1} className="h-full">
-              <div
-                className={[
-                  "flex h-full flex-col rounded-3xl border p-7 transition-transform hover:-translate-y-1",
-                  heroi
-                    ? "border-primary bg-secondary text-secondary-foreground shadow-xl shadow-secondary/20"
-                    : "border-border bg-card",
-                ].join(" ")}
-              >
-                <div className="flex items-center">
+      {/* ===================== SISTEMA (linhas indexadas) ===================== */}
+      <section id="sistema" className="scroll-mt-20 border-b border-border">
+        <div className="mx-auto w-full max-w-7xl px-6 py-24">
+          <Revelar className="max-w-2xl">
+            <h2 className="text-4xl font-semibold leading-tight tracking-tight text-foreground sm:text-5xl">
+              Três camadas. Uma decisão de compra.
+            </h2>
+            <p className="mt-5 text-lg leading-relaxed text-muted-foreground">
+              Cada camada tira um pouco do risco da compra. A execução é a que
+              muda o jogo: é onde o seu capital para de ficar parado em estoque
+              que não gira.
+            </p>
+          </Revelar>
+
+          <div className="mt-16">
+            {CAMADAS.map((c, i) => {
+              const Icone = c.icone;
+              return (
+                <Revelar key={c.titulo} delay={i * 0.08}>
                   <div
                     className={[
-                      "flex size-11 items-center justify-center rounded-full",
-                      heroi ? "bg-primary/30 text-accent" : "bg-primary/10 text-primary",
+                      "grid grid-cols-1 gap-6 border-t border-border py-9 md:grid-cols-[auto_1fr_auto] md:items-center md:gap-10",
+                      c.destaque ? "rounded-2xl border-accent/30 bg-accent/[0.04] px-6" : "",
                     ].join(" ")}
                   >
-                    <Icone className="size-5" aria-hidden />
+                    <div
+                      className={[
+                        "flex size-12 items-center justify-center rounded-xl border",
+                        c.destaque
+                          ? "border-accent/40 bg-accent/10 text-accent"
+                          : "border-border text-muted-foreground",
+                      ].join(" ")}
+                    >
+                      <Icone className="size-6" strokeWidth={1.5} aria-hidden />
+                    </div>
+
+                    <div>
+                      <h3 className="text-2xl font-semibold tracking-tight text-foreground">
+                        {c.titulo}
+                      </h3>
+                      <p className="mt-2 max-w-2xl leading-relaxed text-muted-foreground">
+                        {c.texto}
+                      </p>
+                    </div>
+
+                    <span
+                      className={[
+                        "ops-mono w-fit text-[11px] uppercase tracking-[0.22em] md:justify-self-end",
+                        c.destaque ? "text-accent" : "text-muted-foreground/70",
+                      ].join(" ")}
+                    >
+                      {c.rotulo}
+                    </span>
                   </div>
-                </div>
-
-                <h3 className="mt-6 font-display text-2xl font-bold">
-                  {p.rotulo}
-                </h3>
-                <p
-                  className={[
-                    "mt-3 flex-1 font-body text-base leading-relaxed",
-                    heroi ? "text-creme/85" : "text-foreground/80",
-                  ].join(" ")}
-                >
-                  {p.texto}
-                </p>
-
-                <span
-                  className={[
-                    "mt-6 inline-flex w-fit items-center gap-1.5 rounded-full px-3 py-1 font-ui text-xs font-semibold",
-                    heroi
-                      ? "bg-primary/30 text-creme"
-                      : "bg-muted text-muted-foreground",
-                  ].join(" ")}
-                >
-                  <Sparkles className="size-3" aria-hidden />
-                  {p.selo}
-                </span>
-              </div>
-              </Revelar>
-            );
-          })}
+                </Revelar>
+              );
+            })}
+          </div>
         </div>
       </section>
 
-      {/* ===== POR DENTRO DO SCORE ===== */}
-      <section id="score" className="scroll-mt-20 border-y border-border bg-muted/40">
-        <div className="mx-auto grid w-full max-w-7xl items-center gap-12 px-6 py-20 lg:grid-cols-2">
+      {/* ===================== SCORE (readout central) ===================== */}
+      <section id="score" className="scroll-mt-20 border-b border-border bg-secondary">
+        <div className="mx-auto w-full max-w-4xl px-6 py-14 text-center">
           <Revelar>
-            <h2 className="font-display text-4xl font-bold leading-tight text-foreground">
-              Uma nota que você explica para qualquer um
+            <p className="ops-mono text-xs uppercase tracking-[0.28em] text-accent">
+              Score de compra
+            </p>
+            <h2 className="mt-5 text-4xl font-semibold leading-tight tracking-tight text-foreground sm:text-5xl">
+              Uma nota que você explica para qualquer um.
             </h2>
-            <p className="mt-4 font-body text-lg text-muted-foreground">
-              Cada peça ganha uma nota de{" "}
-              <strong className="font-semibold text-foreground">0 a 100</strong>.
-              Junto com a nota, você vê os{" "}
-              <strong className="font-semibold text-foreground">
-                3 motivos
-              </strong>{" "}
-              por trás dela, escritos em português claro. Sem caixa-preta, sem
-              “a inteligência artificial mandou”.
-            </p>
-            <p className="mt-4 font-body text-lg text-muted-foreground">
-              A conta é sempre a mesma: os mesmos números entram, a mesma nota
-              sai. E quando você preenche o perfil da sua loja, a nota deixa de
-              ser genérica e vira{" "}
-              <strong className="font-semibold text-foreground">
-                a sua nota
-              </strong>
-              .
-            </p>
-            <Link
-              href="/app/decidir"
-              className="mt-7 inline-flex items-center gap-2 font-ui text-sm font-semibold text-primary hover:underline"
-            >
-              Ver a tela de decisão
-              <ArrowRight className="size-4" aria-hidden />
-            </Link>
           </Revelar>
 
-          {/* Exemplo real: nota e os 3 motivos vêm do mesmo motor que roda no produto */}
-          <Revelar delay={0.12} className="rounded-3xl border border-border bg-card p-7 shadow-xl shadow-secondary/5">
-            <div className="flex items-center gap-5">
-              <span className="flex size-20 shrink-0 flex-col items-center justify-center rounded-full bg-primary font-display text-primary-foreground">
-                <span className="text-3xl font-bold leading-none">
-                  {SCORE_DEMO.score}
-                </span>
-                <span className="text-[10px] opacity-80">de 100</span>
-              </span>
-              <div>
-                <p className="font-display text-xl font-bold text-foreground">
-                  {PECA_DEMO.titulo}
-                </p>
-                <p className="mt-0.5 font-body text-sm text-muted-foreground">
-                  nota para uma loja como a sua
-                </p>
-              </div>
-            </div>
-
-            <p className="mt-7 font-ui text-xs font-semibold uppercase tracking-wider text-primary">
-              Por que essa nota?
-            </p>
-            <ol className="mt-3 space-y-3">
-              {SCORE_DEMO.motivos.map((m, i) => (
-                <li key={m.fator} className="flex items-start gap-3">
-                  <span className="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full bg-primary/10 font-ui text-xs font-bold text-primary">
-                    {i + 1}
-                  </span>
-                  <p className="font-body text-sm leading-relaxed text-foreground/85">
-                    {m.texto}
+          {/* Readout real: nota e 3 motivos vêm do mesmo motor que roda no produto */}
+          <Revelar delay={0.12}>
+            <div className="mt-10 rounded-2xl border border-border bg-background p-8 text-left shadow-sm sm:p-12">
+              <div className="flex items-center justify-between gap-5 border-b border-border pb-6">
+                <div>
+                  <p className="ops-mono text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
+                    {PECA_DEMO.titulo}
                   </p>
-                </li>
-              ))}
-            </ol>
+                  <p className="mt-1.5 text-sm text-muted-foreground">
+                    nota para uma loja como a sua
+                  </p>
+                </div>
+                <div className="flex items-baseline gap-1.5">
+                  <span className="ops-mono text-5xl font-semibold leading-none text-accent">
+                    {SCORE_DEMO.score}
+                  </span>
+                  <span className="ops-mono text-sm text-muted-foreground">
+                    /100
+                  </span>
+                </div>
+              </div>
+
+              <p className="ops-mono mt-6 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
+                Por que essa nota
+              </p>
+              <ol className="mt-4 space-y-4">
+                {SCORE_DEMO.motivos.map((m, i) => (
+                  <li key={m.fator} className="flex items-start gap-3.5">
+                    <span className="ops-mono mt-0.5 text-sm font-semibold text-accent">
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                    <p className="leading-relaxed text-foreground/85">
+                      {m.texto}
+                    </p>
+                  </li>
+                ))}
+              </ol>
+
+              <Link
+                href="/app/decidir"
+                className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-accent transition-colors hover:text-foreground"
+              >
+                Ver a tela de decisão
+                <ArrowRight className="size-4" aria-hidden />
+              </Link>
+            </div>
           </Revelar>
         </div>
       </section>
 
-      {/* ===== COMPARAÇÃO: APOSTAR NO ESCURO vs TREND ===== */}
-      <section className="mx-auto w-full max-w-7xl px-6 py-24">
-        <Revelar className="mx-auto max-w-2xl text-center">
-          <span className="font-mono text-[11px] uppercase tracking-[0.25em] text-primary">
-            A diferença
-          </span>
-          <h2 className="mt-4 font-display text-4xl font-bold leading-tight text-foreground sm:text-5xl">
-            Apostar no escuro <span className="italic text-muted-foreground">ou</span>{" "}
-            comprar com método
-          </h2>
-        </Revelar>
+      {/* ===================== COMPARAÇÃO (dois lados) ===================== */}
+      <section className="border-b border-border">
+        <div className="mx-auto w-full max-w-7xl px-6 py-24">
+          <Revelar className="max-w-2xl">
+            <h2 className="text-4xl font-semibold leading-tight tracking-tight text-foreground sm:text-5xl">
+              Apostar no escuro, ou comprar com método.
+            </h2>
+          </Revelar>
 
-        <Revelar className="relative mt-14 grid items-stretch gap-6 lg:grid-cols-2 lg:gap-10">
-          {/* VS central */}
-          <div className="absolute left-1/2 top-1/2 z-10 hidden -translate-x-1/2 -translate-y-1/2 lg:block">
-            <span className="flex size-14 items-center justify-center rounded-full border border-border bg-card font-display text-lg font-bold text-foreground shadow-xl">
-              vs
-            </span>
-          </div>
+          <div className="mt-14 grid items-stretch gap-5 md:grid-cols-2">
+            {/* Sem método: enfraquecido */}
+            <Revelar className="rounded-2xl border border-border bg-background p-8 sm:p-10">
+              <p className="ops-mono text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
+                Sem método
+              </p>
+              <ul className="mt-7 space-y-4 text-muted-foreground">
+                {[
+                  "Decide pelo feed do fornecedor",
+                  "Compra o lote mínimo inteiro, sozinha",
+                  "Capital travado em estoque que não gira",
+                  "Confiança que cai a cada coleção encalhada",
+                ].map((t) => (
+                  <li key={t} className="flex gap-3">
+                    <X
+                      className="mt-0.5 size-4 shrink-0 text-muted-foreground/60"
+                      strokeWidth={2}
+                      aria-hidden
+                    />
+                    {t}
+                  </li>
+                ))}
+              </ul>
+            </Revelar>
 
-          {/* Apostar no escuro: enfraquecido */}
-          <div className="rounded-3xl border border-border bg-card/60 p-8 opacity-90">
-            <div className="flex items-center gap-3">
-              <span className="flex size-10 items-center justify-center rounded-full bg-destructive/10 text-destructive">
-                <X className="size-5" aria-hidden />
-              </span>
-              <div>
-                <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-destructive">
-                  Sem o TREND
-                </p>
-                <h3 className="font-display text-xl font-bold text-foreground">
-                  Apostar no escuro
-                </h3>
-              </div>
-            </div>
-            <ul className="mt-6 space-y-3.5 font-body text-foreground/70">
-              {[
-                "Decide com base no feed do fornecedor",
-                "Compra o lote mínimo inteiro, sozinha",
-                "Capital travado em estoque que não gira",
-                "Confiança que cai a cada coleção encalhada",
-              ].map((t) => (
-                <li key={t} className="flex gap-3">
-                  <X className="mt-0.5 size-4 shrink-0 text-destructive/70" aria-hidden />
-                  {t}
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Com o TREND: elevado e dominante */}
-          <div className="relative overflow-hidden rounded-3xl border-2 border-primary bg-secondary p-8 text-secondary-foreground shadow-2xl shadow-secondary/30 lg:-translate-y-3">
-            <span className="absolute right-6 top-6 rounded-full bg-primary px-3 py-1 font-mono text-[10px] uppercase tracking-[0.15em] text-primary-foreground">
-              o jeito TREND
-            </span>
-            <div className="flex items-center gap-3">
-              <span className="flex size-10 items-center justify-center rounded-full bg-primary/30 text-accent">
-                <Check className="size-5" aria-hidden />
-              </span>
-              <div>
-                <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-accent">
+            {/* Com o TREND: dominante. O quadro "pula" e ganha sombra no hover. */}
+            <Revelar delay={0.1} className="h-full">
+              <div className="group relative h-full overflow-hidden rounded-2xl border border-border bg-card p-8 transition-all duration-300 ease-out hover:-translate-y-2 hover:border-accent/60 hover:shadow-2xl hover:shadow-accent/15 sm:p-10">
+                <span className="absolute left-0 top-0 h-full w-1 bg-accent" aria-hidden />
+                <p className="ops-mono text-[11px] uppercase tracking-[0.22em] text-accent">
                   Com o TREND
                 </p>
-                <h3 className="font-display text-xl font-bold text-creme">
-                  Comprar com método
-                </h3>
+              <ul className="mt-7 space-y-4 text-foreground/85">
+                {[
+                  "Sinal do público, redes e fornecedores num lugar",
+                  "Score explicável e quantidade no tamanho do caixa",
+                  "Pré-venda valida a demanda antes de pagar",
+                  "Compra coletiva fura o lote mínimo entre lojas",
+                ].map((t) => (
+                  <li key={t} className="flex gap-3">
+                    <Check
+                      className="mt-0.5 size-4 shrink-0 text-accent"
+                      strokeWidth={2}
+                      aria-hidden
+                    />
+                    {t}
+                  </li>
+                ))}
+                </ul>
               </div>
-            </div>
-            <ul className="mt-6 space-y-3.5 font-body text-creme/90">
-              {[
-                "Sinal do seu público + redes + fornecedores num lugar",
-                "Score explicável e quantidade no tamanho do seu caixa",
-                "Pré-venda valida a demanda antes de pagar",
-                "Compra coletiva fura o lote mínimo entre lojas",
-              ].map((t) => (
-                <li key={t} className="flex gap-3">
-                  <Check className="mt-0.5 size-4 shrink-0 text-accent" aria-hidden />
-                  {t}
-                </li>
-              ))}
-            </ul>
+            </Revelar>
           </div>
-        </Revelar>
+        </div>
       </section>
 
-      {/* ===== CTA FINAL ===== */}
-      <section className="trend-grain relative overflow-hidden border-t border-border">
-        <div className="trend-aurora absolute inset-0 opacity-80" aria-hidden />
-        <Revelar className="relative mx-auto w-full max-w-4xl px-6 py-24 text-center">
-          <h2 className="font-display text-4xl font-bold leading-tight text-foreground sm:text-5xl">
-            Sua próxima compra não precisa ser um palpite
+      {/* ===================== CTA FINAL ===================== */}
+      <section className="border-b border-border bg-secondary">
+        <Revelar className="mx-auto w-full max-w-4xl px-6 py-28 text-center">
+          <h2 className="text-4xl font-semibold leading-tight tracking-tight text-foreground sm:text-5xl">
+            Sua próxima compra não precisa ser um palpite.
           </h2>
-          <p className="mx-auto mt-4 max-w-xl font-body text-lg text-muted-foreground">
-            Descubra o que vai vender, veja a nota de cada peça e compre sem
-            arriscar o caixa. Tudo com dados de demonstração, sem precisar de
-            cadastro.
+          <p className="mx-auto mt-5 max-w-xl text-lg leading-relaxed text-muted-foreground">
+            Detecte o sinal, leia a nota de cada peça e execute sem arriscar o
+            caixa. Com dados de demonstração, sem cadastro.
           </p>
           <Link
             href="/app/descobrir"
-            className="group mt-9 inline-flex items-center gap-2 rounded-full bg-primary px-8 py-4 font-ui text-base font-semibold text-primary-foreground shadow-xl shadow-primary/20 transition-transform hover:-translate-y-0.5"
+            className="group mt-10 inline-flex items-center gap-2 rounded-full bg-primary px-8 py-4 text-base font-semibold text-primary-foreground transition-transform hover:-translate-y-0.5"
           >
-            Ver como funciona
-            <ArrowRight className="size-5 transition-transform group-hover:translate-x-1" aria-hidden />
+            Acessar plataforma
+            <ArrowRight
+              className="size-5 transition-transform group-hover:translate-x-1"
+              aria-hidden
+            />
           </Link>
         </Revelar>
       </section>
 
-      {/* ===== FOOTER ===== */}
-      <footer className="border-t border-border bg-secondary text-secondary-foreground">
-        <div className="mx-auto flex w-full max-w-7xl flex-col items-center justify-between gap-3 px-6 py-8 font-ui text-sm text-creme/60 sm:flex-row">
-          <span className="font-display text-lg font-bold text-creme">TREND</span>
-          <span className="font-ui text-xs">
-            Protótipo com dados de demonstração. Fotos: Pexels.
+      {/* ===================== FOOTER ===================== */}
+      <footer className="bg-background">
+        <div className="mx-auto flex w-full max-w-7xl items-center px-6 py-10">
+          <span className="ops-mono text-sm font-semibold uppercase tracking-[0.34em] text-foreground">
+            TREND
           </span>
         </div>
       </footer>
-    </div>
+    </>
   );
 }

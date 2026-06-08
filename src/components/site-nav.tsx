@@ -18,11 +18,11 @@ export function SiteNav() {
   const nSelecao = selecionados.length;
 
   return (
-    <header className="sticky top-0 z-20 border-b border-border bg-secondary text-secondary-foreground">
+    <header className="sticky top-0 z-20 border-b border-border bg-background/85 text-foreground backdrop-blur">
       <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-6 px-6 py-4">
         <Link
           href="/"
-          className="font-display text-2xl font-bold tracking-tight text-creme"
+          className="ops-mono text-sm font-semibold uppercase tracking-[0.34em] text-foreground"
         >
           TREND
         </Link>
@@ -35,7 +35,7 @@ export function SiteNav() {
               "flex items-center gap-1.5 rounded-md px-3 py-1.5 font-ui text-sm font-semibold transition-colors",
               pathname === "/app"
                 ? "bg-primary text-primary-foreground"
-                : "text-creme/80 hover:bg-white/10 hover:text-creme",
+                : "text-muted-foreground hover:bg-muted hover:text-foreground",
             )}
           >
             <LayoutDashboard className="size-4" aria-hidden />
@@ -53,7 +53,7 @@ export function SiteNav() {
                   "rounded-md px-3 py-1.5 font-ui text-sm font-semibold transition-colors",
                   ativo
                     ? "bg-primary text-primary-foreground"
-                    : "text-creme/80 hover:bg-white/10 hover:text-creme",
+                    : "text-muted-foreground hover:bg-muted hover:text-foreground",
                 )}
               >
                 {c.rotulo}
@@ -70,7 +70,7 @@ export function SiteNav() {
             "relative flex items-center gap-2 rounded-md px-3 py-1.5 font-ui text-sm font-semibold transition-colors",
             pathname.startsWith("/app/comprar")
               ? "bg-primary text-primary-foreground"
-              : "text-creme/80 hover:bg-white/10 hover:text-creme",
+              : "text-muted-foreground hover:bg-muted hover:text-foreground",
           )}
         >
           <ShoppingBag className="size-4" aria-hidden />
@@ -88,13 +88,13 @@ export function SiteNav() {
           aria-current={perfilAtivo ? "page" : undefined}
           className={cn(
             "flex items-center gap-2 rounded-md px-3 py-1.5 font-ui transition-colors",
-            perfilAtivo ? "bg-primary text-primary-foreground" : "hover:bg-white/10",
+            perfilAtivo ? "bg-primary text-primary-foreground" : "hover:bg-muted",
           )}
         >
           <Store className="size-4 text-accent" aria-hidden />
           <span className="flex flex-col leading-tight">
-            <span className="text-sm font-semibold text-creme">Minha loja</span>
-            <span className="text-[11px] text-creme/60">
+            <span className="text-sm font-semibold text-foreground">Minha loja</span>
+            <span className="text-[11px] text-muted-foreground">
               {!carregada
                 ? "…"
                 : loja

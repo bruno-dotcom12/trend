@@ -61,7 +61,7 @@ export function PreVendaCard({
         {preVenda.lojasBase.map((loja, i) => (
           <span
             key={`${loja}-${i}`}
-            className="rounded-full border border-border bg-background px-2 py-0.5 font-ui text-xs text-secondary"
+            className="rounded-full border border-border bg-background px-2 py-0.5 font-ui text-xs text-foreground/80"
           >
             {loja}
           </span>

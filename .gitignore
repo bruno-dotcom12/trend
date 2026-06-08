@@ -39,3 +39,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# saída gerada da skill designlang (não versionar)
+design-extract-output/

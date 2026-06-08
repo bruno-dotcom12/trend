@@ -58,7 +58,7 @@ export function SinalCard({
           sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
           className="object-cover object-center transition-transform duration-500 hover:scale-105"
         />
-        <span className="absolute right-3 top-3 rounded-full border border-white/20 bg-secondary/80 px-2.5 py-1 font-ui text-xs font-medium text-creme backdrop-blur-sm">
+        <span className="absolute right-3 top-3 rounded-full border border-border bg-background/90 px-2.5 py-1 font-ui text-xs font-medium text-foreground backdrop-blur-sm">
           {FONTES[sinal.fonte].rotulo}
         </span>
         {aderente && (

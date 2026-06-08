@@ -5,6 +5,8 @@ import { useMemo, useState } from "react";
 import { AvisoPerfil } from "@/components/aviso-perfil";
 import { CamadaHeader } from "@/components/camada-header";
 import { FioSelecao } from "@/components/fio-selecao";
+import { FiltroChip } from "@/components/filtro-chip";
+import { FiltroNicho, type FiltroNichoValor } from "@/components/filtro-nicho";
 import { SinalCard } from "@/components/sinal-card";
 import { CAMADAS } from "@/lib/navigation";
 import { useLoja } from "@/lib/loja/store";
@@ -32,24 +34,24 @@ export default function DescobrirPage() {
   }, []);
 
   const [fonte, setFonte] = useState<FiltroFonte>("todas");
-  const [soAderentes, setSoAderentes] = useState(false);
+  const [nicho, setNicho] = useState<FiltroNichoValor>("todos");
 
   // Aderência = o sinal cobre o nicho da loja. Ordena aderentes primeiro,
   // depois por força — toda a personalização vem do perfil salvo (mock).
   const lista = useMemo(() => {
-    const nicho = loja?.nicho;
+    const nichoLoja = loja?.nicho;
     return sinais
       .map((s) => ({
         sinal: s,
-        aderente: nicho ? s.nichos.includes(nicho) : false,
+        aderente: nichoLoja ? s.nichos.includes(nichoLoja) : false,
       }))
       .filter((x) => (fonte === "todas" ? true : x.sinal.fonte === fonte))
-      .filter((x) => (soAderentes ? x.aderente : true))
+      .filter((x) => (nicho === "todos" ? true : x.sinal.nichos.includes(nicho)))
       .sort((a, b) => {
         if (a.aderente !== b.aderente) return a.aderente ? -1 : 1;
         return b.sinal.forca - a.sinal.forca;
       });
-  }, [sinais, loja, fonte, soAderentes]);
+  }, [sinais, loja, fonte, nicho]);
 
   return (
     <div>
@@ -57,29 +59,23 @@ export default function DescobrirPage() {
       <AvisoPerfil />
       <FioSelecao passo={1} />
 
-      {/* Filtros */}
-      <div className="mt-8 flex flex-wrap items-center gap-2">
-        <FiltroChip
-          ativo={fonte === "todas"}
-          onClick={() => setFonte("todas")}
-        >
-          Todas as fontes
-        </FiltroChip>
-        {(Object.keys(FONTES) as FonteSinal[]).map((f) => (
-          <FiltroChip key={f} ativo={fonte === f} onClick={() => setFonte(f)}>
-            {FONTES[f].rotulo}
+      {/* Filtros: fonte do sinal + nicho da loja */}
+      <div className="mt-8 space-y-3">
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="ops-mono mr-1 text-[11px] font-medium uppercase tracking-[0.22em] text-muted-foreground">
+            Fonte
+          </span>
+          <FiltroChip ativo={fonte === "todas"} onClick={() => setFonte("todas")}>
+            Todas
           </FiltroChip>
-        ))}
+          {(Object.keys(FONTES) as FonteSinal[]).map((f) => (
+            <FiltroChip key={f} ativo={fonte === f} onClick={() => setFonte(f)}>
+              {FONTES[f].rotulo}
+            </FiltroChip>
+          ))}
+        </div>
 
-        {loja && (
-          <FiltroChip
-            ativo={soAderentes}
-            onClick={() => setSoAderentes((v) => !v)}
-            className="ml-auto"
-          >
-            Só aderentes ao meu nicho
-          </FiltroChip>
-        )}
+        <FiltroNicho valor={nicho} onChange={setNicho} loja={loja} />
       </div>
 
       {/* Feed */}
@@ -100,34 +96,5 @@ export default function DescobrirPage() {
         </div>
       )}
     </div>
-  );
-}
-
-function FiltroChip({
-  ativo,
-  onClick,
-  className,
-  children,
-}: {
-  ativo: boolean;
-  onClick: () => void;
-  className?: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      aria-pressed={ativo}
-      className={[
-        "rounded-full border px-3.5 py-1.5 font-ui text-sm font-medium transition-colors",
-        ativo
-          ? "border-primary bg-primary text-primary-foreground"
-          : "border-border bg-card text-foreground hover:border-accent",
-        className ?? "",
-      ].join(" ")}
-    >
-      {children}
-    </button>
   );
 }
