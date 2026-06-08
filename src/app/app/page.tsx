@@ -81,7 +81,7 @@ export default function InicioPage() {
           Início · comece aqui
         </span>
         <h1 className="mt-3 font-display text-4xl font-bold text-foreground">
-          {loja ? `Olá, ${loja.cidade}` : "Bem-vinda ao TREND"}
+          {loja ? "Bem-vinda de volta" : "Bem-vinda ao TREND"}
         </h1>
         <p className="mt-2 max-w-2xl font-body text-lg text-muted-foreground">
           O TREND reúne três áreas para a sua próxima compra — use na ordem que
