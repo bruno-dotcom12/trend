@@ -77,7 +77,7 @@ export default function LandingPage() {
           fill
           priority
           sizes="100vw"
-          className="-z-10 object-cover object-[72%_center]"
+          className="-z-10 object-cover object-[72%_top]"
         />
         {/* Scrim suave à esquerda: garante legibilidade do card sobre a parede creme */}
         <div
@@ -120,7 +120,7 @@ export default function LandingPage() {
         </nav>
 
         {/* Card flutuante com a headline + preview do produto */}
-        <div className="mx-auto flex w-full max-w-7xl px-6 pb-20 pt-6 lg:pb-28 lg:pt-10">
+        <div className="mx-auto flex w-full max-w-7xl px-6 pb-28 pt-10 lg:pb-40 lg:pt-16">
           <div className="trend-rise w-full max-w-xl rounded-[28px] border border-border/70 bg-card/80 p-7 shadow-2xl shadow-secondary/15 backdrop-blur-xl sm:p-9">
             <p className="font-ui text-sm font-semibold text-primary">
               Para a lojista multimarca que repõe estoque no atacado
