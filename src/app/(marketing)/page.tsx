@@ -141,21 +141,12 @@ export default function LandingPage() {
               uma vez.
             </p>
 
-            {/* Mini-roteiro: o caminho em 3 passos, em palavras simples */}
-            <div className="mt-6 flex flex-wrap items-center gap-x-2 gap-y-1 font-ui text-sm font-semibold text-secondary/80">
-              <span>Descubra</span>
-              <ArrowRight className="size-4 text-primary" aria-hidden />
-              <span>Decida</span>
-              <ArrowRight className="size-4 text-primary" aria-hidden />
-              <span>Compre sem risco</span>
-            </div>
-
             <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
               <Link
                 href="/app/descobrir"
                 className="group inline-flex items-center justify-center gap-2 rounded-full bg-primary px-6 py-3.5 font-ui text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/20 transition-transform hover:-translate-y-0.5"
               >
-                Ver como funciona, grátis
+                Ver como funciona
                 <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" aria-hidden />
               </Link>
               <span className="font-ui text-xs text-muted-foreground">
@@ -194,12 +185,12 @@ export default function LandingPage() {
             Como funciona
           </span>
           <h2 className="mt-4 font-display text-4xl font-bold leading-tight text-foreground sm:text-5xl">
-            Três passos, do palpite à compra certa
+            Três frentes contra a aposta no escuro
           </h2>
           <p className="mt-4 font-body text-lg text-muted-foreground">
-            Cada passo tira um pouco do risco da sua próxima compra. O terceiro é
-            o que muda o jogo: é onde o seu dinheiro para de ficar parado em
-            estoque que não gira.
+            Cada frente tira um pouco do risco da sua próxima compra — use na
+            ordem que quiser. A execução é a que muda o jogo: é onde o seu
+            dinheiro para de ficar parado em estoque que não gira.
           </p>
         </Revelar>
 
@@ -217,17 +208,7 @@ export default function LandingPage() {
                     : "border-border bg-card",
                 ].join(" ")}
               >
-                <div className="flex items-center justify-between">
-                  <span
-                    className={[
-                      "flex size-9 items-center justify-center rounded-full font-display text-lg font-bold",
-                      heroi
-                        ? "bg-accent text-secondary"
-                        : "bg-primary/10 text-primary",
-                    ].join(" ")}
-                  >
-                    {p.n}
-                  </span>
+                <div className="flex items-center">
                   <div
                     className={[
                       "flex size-11 items-center justify-center rounded-full",
@@ -442,7 +423,7 @@ export default function LandingPage() {
             href="/app/descobrir"
             className="group mt-9 inline-flex items-center gap-2 rounded-full bg-primary px-8 py-4 font-ui text-base font-semibold text-primary-foreground shadow-xl shadow-primary/20 transition-transform hover:-translate-y-0.5"
           >
-            Ver como funciona, grátis
+            Ver como funciona
             <ArrowRight className="size-5 transition-transform group-hover:translate-x-1" aria-hidden />
           </Link>
         </Revelar>

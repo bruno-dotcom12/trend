@@ -6,7 +6,6 @@ import { AvisoPerfil } from "@/components/aviso-perfil";
 import { CamadaHeader } from "@/components/camada-header";
 import { FioSelecao } from "@/components/fio-selecao";
 import { PecaDecisaoCard } from "@/components/peca-decisao-card";
-import { ProximoPasso } from "@/components/proximo-passo";
 import { calcularScore } from "@/lib/engine";
 import { useLoja } from "@/lib/loja/store";
 import { CAMADAS } from "@/lib/navigation";
@@ -49,7 +48,6 @@ export default function DecidirPage() {
           />
         ))}
       </div>
-      <ProximoPasso passoAtual={2} />
     </div>
   );
 }

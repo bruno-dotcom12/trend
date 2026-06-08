@@ -2,8 +2,9 @@ import { DemoBadge } from "@/components/demo-badge";
 import type { Camada } from "@/lib/navigation";
 
 // Cabeçalho padrão de cada tela do produto.
-// Recebe a camada inteira (fonte única) e mostra: passo + legenda + nome direto
+// Recebe a camada inteira (fonte única) e mostra: legenda + nome direto
 // + um mini-explicador didático (o que é · por que importa · o que fazer aqui).
+// Sem numeração de passo — cada área é independente.
 export function CamadaHeader({ camada }: { camada: Camada }) {
   const cards = [
     { t: "O que é", d: camada.comoFunciona.oQueE },
@@ -15,10 +16,7 @@ export function CamadaHeader({ camada }: { camada: Camada }) {
     <header className="border-b border-border pb-6">
       <div className="flex flex-wrap items-center gap-3">
         <span className="inline-flex items-center gap-2 font-ui text-xs font-semibold uppercase tracking-[0.2em] text-primary">
-          <span className="flex size-5 items-center justify-center rounded-full bg-primary/15 text-[11px]">
-            {camada.passo}
-          </span>
-          Passo {camada.passo} de 3 · {camada.legenda}
+          {camada.legenda}
         </span>
         <DemoBadge />
       </div>

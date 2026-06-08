@@ -48,12 +48,12 @@ export function RoupasEscolhidas() {
 
       {!carregada ? null : escolhidas.length === 0 ? (
         <p className="mt-5 rounded-lg border border-dashed border-border bg-card p-8 text-center font-body text-muted-foreground">
-          Você ainda não escolheu roupas. Volte ao{" "}
+          Você ainda não escolheu roupas. Vá para a área{" "}
           <Link
             href="/app/decidir"
             className="font-semibold text-primary hover:underline"
           >
-            passo Decidir
+            Decidir
           </Link>{" "}
           e selecione as peças que quer comprar — elas aparecem aqui prontas para
           a pré-venda ou a compra coletiva.

@@ -6,7 +6,6 @@ import { AvisoPerfil } from "@/components/aviso-perfil";
 import { CamadaHeader } from "@/components/camada-header";
 import { CompraColetivaCard } from "@/components/compra-coletiva-card";
 import { PreVendaCard } from "@/components/pre-venda-card";
-import { ProximoPasso } from "@/components/proximo-passo";
 import { RoupasEscolhidas } from "@/components/roupas-escolhidas";
 import { quantidadeRecomendada } from "@/lib/engine";
 import { montarEntradaScore } from "@/lib/pecas/score";
@@ -110,7 +109,6 @@ export default function ComprarPage() {
           ))}
         </div>
       </section>
-      <ProximoPasso passoAtual={3} />
     </div>
   );
 }

@@ -5,7 +5,6 @@ import { useMemo, useState } from "react";
 import { AvisoPerfil } from "@/components/aviso-perfil";
 import { CamadaHeader } from "@/components/camada-header";
 import { FioSelecao } from "@/components/fio-selecao";
-import { ProximoPasso } from "@/components/proximo-passo";
 import { SinalCard } from "@/components/sinal-card";
 import { CAMADAS } from "@/lib/navigation";
 import { useLoja } from "@/lib/loja/store";
@@ -97,7 +96,6 @@ export default function DescobrirPage() {
           ))}
         </div>
       )}
-      <ProximoPasso passoAtual={1} />
     </div>
   );
 }

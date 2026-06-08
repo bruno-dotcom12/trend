@@ -88,12 +88,13 @@ export default function InicioPage() {
           {loja ? `Olá, ${loja.cidade}` : "Bem-vinda ao TREND"}
         </h1>
         <p className="mt-2 max-w-2xl font-body text-lg text-muted-foreground">
-          O TREND organiza sua próxima compra em três passos. Não prevemos o
-          futuro — damos a instrução certa com base no mercado e nos seus dados.
+          O TREND reúne três áreas para a sua próxima compra — use na ordem que
+          quiser. Não prevemos o futuro: damos a instrução certa com base no
+          mercado e nos seus dados.
         </p>
       </header>
 
-      {/* Passo 0 — perfil */}
+      {/* Perfil da loja — personaliza as recomendações */}
       <section className="mt-8 flex flex-col gap-3 rounded-2xl border border-border bg-card p-6 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-start gap-3">
           <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
@@ -101,7 +102,7 @@ export default function InicioPage() {
           </span>
           <div>
             <p className="font-ui text-sm font-semibold text-foreground">
-              Passo 0 · Perfil da sua loja
+              Perfil da sua loja
             </p>
             <p className="font-body text-sm text-muted-foreground">
               {loja
@@ -110,7 +111,7 @@ export default function InicioPage() {
                       ? " · " + [nichoRotulo, faixaRotulo].filter(Boolean).join(" · ")
                       : ""
                   }`
-                : "Complete o perfil para personalizar a trilha (quantidade e aderência ao seu público)."}
+                : "Complete o perfil para personalizar as recomendações (quantidade e aderência ao seu público)."}
             </p>
           </div>
         </div>
@@ -128,10 +129,10 @@ export default function InicioPage() {
         </Link>
       </section>
 
-      {/* Trilha em 3 passos */}
+      {/* As três áreas — independentes, sem ordem obrigatória */}
       <section className="mt-10">
         <h2 className="font-display text-2xl font-bold text-foreground">
-          Sua jornada em 3 passos
+          As três áreas do TREND
         </h2>
         <div className="mt-5 grid gap-5 lg:grid-cols-3">
           {CAMADAS.map((c) => (
@@ -140,10 +141,7 @@ export default function InicioPage() {
               href={c.href}
               className="group flex flex-col rounded-2xl border border-border bg-card p-6 transition-transform hover:-translate-y-1 hover:border-primary"
             >
-              <span className="flex size-9 items-center justify-center rounded-full bg-primary font-display text-base font-bold text-primary-foreground">
-                {c.passo}
-              </span>
-              <p className="mt-4 font-ui text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+              <p className="font-ui text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
                 {c.legenda}
               </p>
               <h3 className="mt-1 font-display text-xl font-bold text-foreground">
@@ -166,7 +164,7 @@ export default function InicioPage() {
           href={loja ? "/app/descobrir" : "/app/onboarding"}
           className="mt-6 inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3.5 font-ui text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/20 transition-transform hover:-translate-y-0.5"
         >
-          {loja ? "Começar pelo passo 1 · Descobrir" : "Começar pelo perfil"}
+          {loja ? "Explorar tendências" : "Completar perfil"}
           <ArrowRight className="size-4" aria-hidden />
         </Link>
       </section>
@@ -189,7 +187,7 @@ export default function InicioPage() {
 
       {/* Atalhos: top sinais e top peças */}
       <div className="mt-12 grid gap-6 lg:grid-cols-2">
-        <Bloco titulo="Sinais em alta para você" href="/app/descobrir" hrefRotulo="Ver passo 1">
+        <Bloco titulo="Sinais em alta para você" href="/app/descobrir" hrefRotulo="Abrir Descobrir">
           <ul className="space-y-3">
             {topSinais.map((s) => (
               <li
@@ -211,7 +209,7 @@ export default function InicioPage() {
           </ul>
         </Bloco>
 
-        <Bloco titulo="Peças com maior score" href="/app/decidir" hrefRotulo="Ver passo 2">
+        <Bloco titulo="Peças com maior score" href="/app/decidir" hrefRotulo="Abrir Decidir">
           <ul className="space-y-3">
             {topPecas.map(({ peca, score }) => (
               <li
@@ -243,7 +241,7 @@ export default function InicioPage() {
             href="/app/comprar"
             className="inline-flex items-center gap-1 font-ui text-sm font-semibold text-primary hover:underline"
           >
-            Ver passo 3
+            Abrir Comprar
             <ArrowRight className="size-4" aria-hidden />
           </Link>
         </div>
