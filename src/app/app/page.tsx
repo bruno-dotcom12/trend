@@ -5,7 +5,6 @@ import Link from "next/link";
 import { ArrowRight, Check, Sparkles, Store, TrendingUp } from "lucide-react";
 
 import { BarraProgresso } from "@/components/barra-progresso";
-import { DemoBadge } from "@/components/demo-badge";
 import { calcularScore } from "@/lib/engine";
 import {
   listarComprasColetivas,
@@ -78,12 +77,9 @@ export default function InicioPage() {
     <div>
       {/* Cabeçalho */}
       <header className="border-b border-border pb-6">
-        <div className="flex items-center gap-3">
-          <span className="font-ui text-xs font-semibold uppercase tracking-[0.2em] text-primary">
-            Início · comece aqui
-          </span>
-          <DemoBadge />
-        </div>
+        <span className="font-ui text-xs font-semibold uppercase tracking-[0.2em] text-primary">
+          Início · comece aqui
+        </span>
         <h1 className="mt-3 font-display text-4xl font-bold text-foreground">
           {loja ? `Olá, ${loja.cidade}` : "Bem-vinda ao TREND"}
         </h1>

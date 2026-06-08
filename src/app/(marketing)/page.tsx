@@ -170,7 +170,7 @@ export default function LandingPage() {
               >
                 {s.titulo}
                 <span className="rounded-full bg-primary/10 px-2 py-0.5 font-ui text-xs font-semibold text-primary">
-                  força {s.forca}
+                  score {s.forca}
                 </span>
               </span>
             ))}

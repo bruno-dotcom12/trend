@@ -20,9 +20,12 @@ export default function DescobrirPage() {
   const camada = CAMADAS.find((c) => c.passo === 1)!;
 
   // Mapa sinal → peça candidata, para ligar "acompanhar tendência" à seleção.
+  // Casa pela origem declarada e, como fallback, pelo id em comum (sinal e peça
+  // do mesmo produto compartilham o id no seed).
   const pecaPorSinal = useMemo(() => {
     const mapa = new Map<string, string>();
     for (const p of listarPecas()) {
+      mapa.set(p.id, p.id);
       if (p.origemSinalId) mapa.set(p.origemSinalId, p.id);
     }
     return mapa;

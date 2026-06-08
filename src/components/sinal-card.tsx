@@ -77,11 +77,11 @@ export function SinalCard({
           {sinal.titulo}
         </h3>
 
-        {/* Barra de força */}
+        {/* Barra de score do sinal */}
         <div className="mt-4">
           <div className="flex items-center justify-between font-ui text-xs">
             <span className="font-medium text-muted-foreground">
-              Força do sinal
+              Score do sinal
             </span>
             <span className="flex items-center gap-1 font-semibold text-foreground">
               <IconeDirecao
@@ -102,7 +102,7 @@ export function SinalCard({
               aria-valuenow={sinal.forca}
               aria-valuemin={0}
               aria-valuemax={100}
-              aria-label={`Força do sinal: ${sinal.forca} de 100`}
+              aria-label={`Score do sinal: ${sinal.forca} de 100`}
             />
           </div>
         </div>

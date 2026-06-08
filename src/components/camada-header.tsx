@@ -1,4 +1,3 @@
-import { DemoBadge } from "@/components/demo-badge";
 import type { Camada } from "@/lib/navigation";
 
 // Cabeçalho padrão de cada tela do produto.
@@ -14,12 +13,9 @@ export function CamadaHeader({ camada }: { camada: Camada }) {
 
   return (
     <header className="border-b border-border pb-6">
-      <div className="flex flex-wrap items-center gap-3">
-        <span className="inline-flex items-center gap-2 font-ui text-xs font-semibold uppercase tracking-[0.2em] text-primary">
-          {camada.legenda}
-        </span>
-        <DemoBadge />
-      </div>
+      <span className="inline-flex items-center gap-2 font-ui text-xs font-semibold uppercase tracking-[0.2em] text-primary">
+        {camada.legenda}
+      </span>
       <h1 className="mt-3 font-display text-4xl font-bold text-foreground">
         {camada.rotulo}
       </h1>

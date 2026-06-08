@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 
 import { AnaliseLoja } from "@/components/analise-loja";
 import { Button } from "@/components/ui/button";
-import { DemoBadge } from "@/components/demo-badge";
 import {
   ErroCampo,
   Field,
@@ -118,12 +117,9 @@ function FormularioLoja({ inicial }: { inicial: Loja }) {
   return (
     <div className="mx-auto max-w-2xl">
       <header className="border-b border-border pb-6">
-        <div className="flex items-center gap-3">
-          <span className="font-ui text-xs font-semibold uppercase tracking-[0.2em] text-primary">
-            Perfil da loja
-          </span>
-          <DemoBadge />
-        </div>
+        <span className="font-ui text-xs font-semibold uppercase tracking-[0.2em] text-primary">
+          Perfil da loja
+        </span>
         <h1 className="mt-3 font-display text-4xl font-bold text-foreground">
           Conte sobre a sua loja
         </h1>
