@@ -53,7 +53,7 @@ export default function ComprarPage() {
 
       {/* Pré-venda */}
       <section id="pre-venda" className="mt-10 scroll-mt-24">
-        <div className="flex items-baseline justify-between gap-4 border-b border-border pb-3">
+        <div className="flex flex-col gap-1.5 border-b border-border pb-3 sm:flex-row sm:items-baseline sm:justify-between sm:gap-4">
           <h2 className="font-display text-2xl font-bold text-foreground">
             Pré-venda
           </h2>
@@ -89,7 +89,7 @@ export default function ComprarPage() {
 
       {/* Compra coletiva */}
       <section id="compra-coletiva" className="mt-12 scroll-mt-24">
-        <div className="flex items-baseline justify-between gap-4 border-b border-border pb-3">
+        <div className="flex flex-col gap-1.5 border-b border-border pb-3 sm:flex-row sm:items-baseline sm:justify-between sm:gap-4">
           <h2 className="font-display text-2xl font-bold text-foreground">
             Compra coletiva
           </h2>
