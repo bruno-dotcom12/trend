@@ -1,37 +1,35 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Menu, ShoppingBag, Store, X } from "lucide-react";
+import { LayoutDashboard, ShoppingBag, Store } from "lucide-react";
 
 import { CAMADAS } from "@/lib/navigation";
 import { useLoja } from "@/lib/loja/store";
 import { useSelecao } from "@/lib/selecao/store";
 import { cn } from "@/lib/utils";
 
-// Itens de navegação das áreas. No desktop usamos o rótulo curto (1ª palavra)
-// para caber numa linha; no menu mobile mostramos o nome completo.
+// Itens de navegação das áreas. Rótulo curto (1ª palavra) para caber na faixa.
 const ITENS = [
-  { href: "/app", curto: "Início", completo: "Início", exato: true },
+  { href: "/app", rotulo: "Início", inicio: true, exato: true },
   ...CAMADAS.map((c) => ({
     href: c.href,
-    curto: c.rotulo.split(" ")[0],
-    completo: c.rotulo,
+    rotulo: c.rotulo.split(" ")[0],
+    inicio: false,
     exato: false,
   })),
 ];
 
 // Cabeçalho do produto: logo + navegação das 3 camadas (Descobrir / Decidir /
-// Comprar). Em telas pequenas a navegação vira um menu retrátil para não
-// estourar a largura.
+// Comprar). No desktop tudo numa linha; no mobile o logo + ações ficam em cima
+// e as abas viram uma faixa de "pills" sempre visível (rola na horizontal),
+// para que quem chega encontre as áreas sem precisar abrir menu.
 export function SiteNav() {
   const pathname = usePathname();
   const { loja, carregada } = useLoja();
   const { selecionados, carregada: selecaoCarregada } = useSelecao();
   const perfilAtivo = pathname.startsWith("/app/onboarding");
   const nSelecao = selecionados.length;
-  const [aberto, setAberto] = useState(false);
 
   const estaAtivo = (href: string, exato: boolean) =>
     exato ? pathname === href : pathname.startsWith(href);
@@ -41,7 +39,6 @@ export function SiteNav() {
       <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-3 px-4 py-4 sm:gap-6 sm:px-6">
         <Link
           href="/"
-          onClick={() => setAberto(false)}
           className="ops-mono shrink-0 text-sm font-semibold uppercase tracking-[0.34em] text-foreground"
         >
           TREND
@@ -63,23 +60,20 @@ export function SiteNav() {
                     : "text-muted-foreground hover:bg-muted hover:text-foreground",
                 )}
               >
-                {it.href === "/app" && (
-                  <LayoutDashboard className="size-4" aria-hidden />
-                )}
-                {it.curto}
+                {it.inicio && <LayoutDashboard className="size-4" aria-hidden />}
+                {it.rotulo}
               </Link>
             );
           })}
         </nav>
 
-        {/* Ações à direita: seleção (sempre) + perfil (desktop) + menu (mobile) */}
+        {/* Ações à direita: seleção (sempre) + perfil */}
         <div className="flex items-center gap-1.5">
           {/* Minha seleção: o carrinho que atravessa as 3 camadas */}
           <Link
             href="/app/comprar"
             title="Minha seleção"
             aria-label="Minha seleção"
-            onClick={() => setAberto(false)}
             className={cn(
               "relative flex items-center gap-2 rounded-md px-3 py-1.5 font-ui text-sm font-semibold transition-colors",
               pathname.startsWith("/app/comprar")
@@ -96,17 +90,19 @@ export function SiteNav() {
             )}
           </Link>
 
-          {/* Chip do perfil: visível a partir de md (no mobile vai pro menu) */}
+          {/* Chip do perfil: completo no desktop, só ícone no mobile */}
           <Link
             href="/app/onboarding"
             aria-current={perfilAtivo ? "page" : undefined}
+            title="Minha loja"
+            aria-label="Minha loja"
             className={cn(
-              "hidden items-center gap-2 rounded-md px-3 py-1.5 font-ui transition-colors md:flex",
+              "flex items-center gap-2 rounded-md px-2.5 py-1.5 font-ui transition-colors sm:px-3",
               perfilAtivo ? "bg-primary text-primary-foreground" : "hover:bg-muted",
             )}
           >
             <Store className="size-4 text-accent" aria-hidden />
-            <span className="flex flex-col leading-tight">
+            <span className="hidden flex-col leading-tight md:flex">
               <span className="text-sm font-semibold text-foreground">
                 Minha loja
               </span>
@@ -119,76 +115,31 @@ export function SiteNav() {
               </span>
             </span>
           </Link>
-
-          {/* Botão do menu — só mobile */}
-          <button
-            type="button"
-            onClick={() => setAberto((v) => !v)}
-            aria-label={aberto ? "Fechar menu" : "Abrir menu"}
-            aria-expanded={aberto}
-            className="flex size-9 items-center justify-center rounded-md text-foreground transition-colors hover:bg-muted md:hidden"
-          >
-            {aberto ? (
-              <X className="size-5" aria-hidden />
-            ) : (
-              <Menu className="size-5" aria-hidden />
-            )}
-          </button>
         </div>
       </div>
 
-      {/* Menu retrátil mobile */}
-      {aberto && (
-        <nav className="border-t border-border bg-background px-4 pb-4 pt-2 md:hidden">
-          {ITENS.map((it) => {
-            const ativo = estaAtivo(it.href, it.exato);
-            return (
-              <Link
-                key={it.href}
-                href={it.href}
-                onClick={() => setAberto(false)}
-                aria-current={ativo ? "page" : undefined}
-                className={cn(
-                  "flex items-center gap-2 rounded-md px-3 py-2.5 font-ui text-sm font-semibold transition-colors",
-                  ativo
-                    ? "bg-primary text-primary-foreground"
-                    : "text-muted-foreground hover:bg-muted hover:text-foreground",
-                )}
-              >
-                {it.href === "/app" && (
-                  <LayoutDashboard className="size-4" aria-hidden />
-                )}
-                {it.completo}
-              </Link>
-            );
-          })}
-
-          {/* Perfil da loja no menu */}
-          <Link
-            href="/app/onboarding"
-            onClick={() => setAberto(false)}
-            aria-current={perfilAtivo ? "page" : undefined}
-            className={cn(
-              "mt-1 flex items-center gap-2 rounded-md border-t border-border px-3 pb-2 pt-3 font-ui transition-colors",
-              perfilAtivo ? "text-primary" : "text-muted-foreground hover:text-foreground",
-            )}
-          >
-            <Store className="size-4 text-accent" aria-hidden />
-            <span className="flex flex-col leading-tight">
-              <span className="text-sm font-semibold text-foreground">
-                Minha loja
-              </span>
-              <span className="text-[11px] text-muted-foreground">
-                {!carregada
-                  ? "…"
-                  : loja
-                    ? `${loja.cidade} · ${loja.uf}`
-                    : "completar perfil"}
-              </span>
-            </span>
-          </Link>
-        </nav>
-      )}
+      {/* Faixa de abas — só mobile (md:hidden). Sempre visível, rola na horizontal. */}
+      <nav className="flex gap-1.5 overflow-x-auto border-t border-border px-4 py-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden md:hidden">
+        {ITENS.map((it) => {
+          const ativo = estaAtivo(it.href, it.exato);
+          return (
+            <Link
+              key={it.href}
+              href={it.href}
+              aria-current={ativo ? "page" : undefined}
+              className={cn(
+                "flex shrink-0 items-center gap-1.5 rounded-full px-3.5 py-1.5 font-ui text-sm font-semibold transition-colors",
+                ativo
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-muted/60 text-muted-foreground hover:bg-muted hover:text-foreground",
+              )}
+            >
+              {it.inicio && <LayoutDashboard className="size-4" aria-hidden />}
+              {it.rotulo}
+            </Link>
+          );
+        })}
+      </nav>
     </header>
   );
 }
