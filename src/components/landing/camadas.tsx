@@ -9,6 +9,7 @@ import {
   useReducedMotion,
   useScroll,
   useTransform,
+  type MotionStyle,
   type MotionValue,
 } from "motion/react";
 
@@ -202,8 +203,19 @@ function LinhaCamada({
     camada.destaque ? [0, 1] : [0, 0],
   );
 
+  // Opacity entra como CSS var (--surgir): o motion escreve custom properties
+  // sempre inline. Opacity direta de MotionValue de scroll vira uma animação
+  // WAAPI com keyframes errados no motion v12 (sobe no segmento e decai até
+  // o fim do pin) — bug observado em runtime, transform não é afetado.
   const propsAnimacao = pinado
-    ? { style: { opacity, y, scale: escala } }
+    ? {
+        style: {
+          "--surgir": opacity,
+          opacity: "var(--surgir)",
+          y,
+          scale: escala,
+        } as MotionStyle,
+      }
     : {
         initial: reduzirMovimento ? false : { opacity: 0, y: 28 },
         whileInView: { opacity: 1, y: 0 },
@@ -216,10 +228,18 @@ function LinhaCamada({
       };
 
   return (
-    <motion.div className="relative" {...propsAnimacao}>
+    // key por modo: trocar initial/whileInView por style com MotionValues na
+    // MESMA instância deixa a opacity presa no estado antigo (0) — remontar
+    // ao mudar de modo zera o estado interno do motion
+    <motion.div key={pinado ? "pin" : "fluxo"} className="relative" {...propsAnimacao}>
       {/* Halo ciano da execução — box-shadow fixo, só a opacidade anima */}
       <motion.span
-        style={{ opacity: pinado ? glow : 0 }}
+        style={
+          {
+            "--halo": pinado ? glow : 0,
+            opacity: "var(--halo)",
+          } as MotionStyle
+        }
         className="pointer-events-none absolute -inset-px rounded-2xl shadow-[0_0_70px_-10px] shadow-accent/40"
         aria-hidden
       />

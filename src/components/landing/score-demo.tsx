@@ -12,6 +12,7 @@ import {
   useScroll,
   useSpring,
   useTransform,
+  type MotionStyle,
   type MotionValue,
 } from "motion/react";
 
@@ -132,8 +133,17 @@ function MotivoItem({
     [0, 1],
   );
 
+  // Opacity via CSS var: opacity direta de MotionValue de scroll vira WAAPI
+  // com keyframes errados no motion v12 (ver camadas.tsx) — vars são sempre
+  // escritas inline e não passam por esse caminho
   const propsItem = pinado
-    ? { style: { opacity: opacityScroll, y: yScroll } }
+    ? {
+        style: {
+          "--surgir": opacityScroll,
+          opacity: "var(--surgir)",
+          y: yScroll,
+        } as MotionStyle,
+      }
     : {
         initial: reduzirMovimento ? false : { opacity: 0, y: 18 },
         animate: mostrar ? { opacity: 1, y: 0 } : undefined,
@@ -158,7 +168,12 @@ function MotivoItem({
       };
 
   return (
-    <motion.li className="flex items-start gap-3.5" {...propsItem}>
+    // key por modo: remonta ao alternar reveal↔scroll-driven (ver camadas.tsx)
+    <motion.li
+      key={pinado ? "pin" : "fluxo"}
+      className="flex items-start gap-3.5"
+      {...propsItem}
+    >
       <span className="ops-mono mt-0.5 text-sm font-semibold text-accent">
         {String(indice + 1).padStart(2, "0")}
       </span>
