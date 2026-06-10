@@ -2,7 +2,6 @@ import Link from "next/link";
 import Image from "next/image";
 import {
   ArrowRight,
-  ArrowUpRight,
   Check,
   Radar,
   Scale,
@@ -69,37 +68,8 @@ export default function LandingPage() {
   return (
     <>
       {/* ===================== HERO (editorial estilo Kokonut) ===================== */}
-      <section className="relative flex flex-col lg:min-h-[100dvh]">
-        {/* Navegação (uma linha, sobre o branco) */}
-        <nav className="relative z-10">
-          <div className="mx-auto flex h-[72px] w-full max-w-7xl items-center justify-between px-6">
-            <span className="ops-mono text-sm font-semibold uppercase tracking-[0.34em] text-foreground">
-              TREND
-            </span>
-            <div className="hidden items-center gap-8 md:flex">
-              <a
-                href="#sistema"
-                className="text-sm font-semibold text-foreground [text-shadow:0_1px_3px_rgb(0_0_0/0.25)] transition-colors hover:text-accent"
-              >
-                Sistema
-              </a>
-              <a
-                href="#score"
-                className="text-sm font-semibold text-foreground [text-shadow:0_1px_3px_rgb(0_0_0/0.25)] transition-colors hover:text-accent"
-              >
-                Score
-              </a>
-            </div>
-            <Link
-              href="/app/descobrir"
-              className="inline-flex items-center gap-1.5 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-transform hover:-translate-y-0.5"
-            >
-              Acessar plataforma
-              <ArrowUpRight className="size-4" strokeWidth={2} aria-hidden />
-            </Link>
-          </div>
-        </nav>
-
+      {/* pt-[72px] compensa a navbar fixa (componente landing/navbar) */}
+      <section className="relative flex flex-col pt-[72px] lg:min-h-[100dvh]">
         {/* Editorial: texto arejado à esquerda, foto colorida dominante sangrando à direita */}
         <div className="flex flex-1 flex-col lg:flex-row">
           {/* Coluna de texto — alinhada à sarjeta do container, bem espaçada */}
