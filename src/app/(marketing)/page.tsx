@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, Check, X } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 import { calcularScore } from "@/lib/engine";
 import { listarPecas } from "@/lib/pecas/fonte";
@@ -8,6 +8,7 @@ import { listarSinais } from "@/lib/sinais/fonte";
 import type { Loja } from "@/lib/loja/tipos";
 import { Revelar } from "@/components/revelar";
 import { Camadas } from "@/components/landing/camadas";
+import { Comparativo } from "@/components/landing/comparativo";
 import { HeroFoto, HeroTexto } from "@/components/landing/hero";
 import { HeroVideo } from "@/components/landing/hero-video";
 import { ScoreDemo } from "@/components/landing/score-demo";
@@ -69,68 +70,7 @@ export default function LandingPage() {
       />
 
       {/* ===================== COMPARAÇÃO (dois lados) ===================== */}
-      <section className="border-b border-border">
-        <div className="mx-auto w-full max-w-7xl px-6 py-24">
-          <Revelar className="max-w-2xl">
-            <h2 className="text-4xl font-semibold leading-tight tracking-tight text-foreground sm:text-5xl">
-              Apostar no escuro, ou comprar com método.
-            </h2>
-          </Revelar>
-
-          <div className="mt-14 grid items-stretch gap-5 md:grid-cols-2">
-            {/* Sem método: enfraquecido */}
-            <Revelar className="rounded-2xl border border-border bg-background p-8 sm:p-10">
-              <p className="ops-mono text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
-                Sem método
-              </p>
-              <ul className="mt-7 space-y-4 text-muted-foreground">
-                {[
-                  "Decide pelo feed do fornecedor",
-                  "Compra o lote mínimo inteiro, sozinha",
-                  "Capital travado em estoque que não gira",
-                  "Confiança que cai a cada coleção encalhada",
-                ].map((t) => (
-                  <li key={t} className="flex gap-3">
-                    <X
-                      className="mt-0.5 size-4 shrink-0 text-muted-foreground/60"
-                      strokeWidth={2}
-                      aria-hidden
-                    />
-                    {t}
-                  </li>
-                ))}
-              </ul>
-            </Revelar>
-
-            {/* Com o TREND: dominante. O quadro "pula" e ganha sombra no hover. */}
-            <Revelar delay={0.1} className="h-full">
-              <div className="group relative h-full overflow-hidden rounded-2xl border border-border bg-card p-8 transition-all duration-300 ease-out hover:-translate-y-2 hover:border-accent/60 hover:shadow-2xl hover:shadow-accent/15 sm:p-10">
-                <span className="absolute left-0 top-0 h-full w-1 bg-accent" aria-hidden />
-                <p className="ops-mono text-[11px] uppercase tracking-[0.22em] text-accent">
-                  Com o TREND
-                </p>
-              <ul className="mt-7 space-y-4 text-foreground/85">
-                {[
-                  "Sinal do público, redes e fornecedores num lugar",
-                  "Score explicável e quantidade no tamanho do caixa",
-                  "Pré-venda valida a demanda antes de pagar",
-                  "Compra coletiva fura o lote mínimo entre lojas",
-                ].map((t) => (
-                  <li key={t} className="flex gap-3">
-                    <Check
-                      className="mt-0.5 size-4 shrink-0 text-accent"
-                      strokeWidth={2}
-                      aria-hidden
-                    />
-                    {t}
-                  </li>
-                ))}
-                </ul>
-              </div>
-            </Revelar>
-          </div>
-        </div>
-      </section>
+      <Comparativo />
 
       {/* ===================== CTA FINAL ===================== */}
       <section className="border-b border-border bg-secondary">
