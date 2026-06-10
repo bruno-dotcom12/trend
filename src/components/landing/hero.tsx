@@ -101,9 +101,9 @@ export function HeroFoto() {
           {/* escala final 1.06 dá folga para o parallax não expor borda */}
           <motion.div
             className="absolute inset-0"
-            initial={reduzirMovimento ? false : { scale: 1.18, opacity: 0 }}
+            initial={reduzirMovimento ? false : { scale: 1.12, opacity: 0 }}
             animate={{ scale: 1.06, opacity: 1 }}
-            transition={{ duration: 1.8, ease: EASE_SUAVE }}
+            transition={{ duration: 1.4, ease: EASE_SUAVE }}
           >
             <Image
               src="/landing/hero-editorial.jpg"

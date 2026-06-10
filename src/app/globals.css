@@ -271,6 +271,26 @@
   animation: trend-girar 48s linear infinite;
 }
 
+/* Painéis pinados em viewport BAIXO (notebook 1366×768 etc.): compacta o
+   conteúdo para a terceira camada (Execução) nunca clipar dentro do pin */
+@media (max-height: 780px) and (min-width: 1024px) {
+  .trend-pin-painel .trend-pin-cabecalho h2 {
+    font-size: 1.875rem;
+    line-height: 1.2;
+  }
+  .trend-pin-painel .trend-pin-cabecalho p {
+    margin-top: 0.75rem;
+    font-size: 1rem;
+  }
+  .trend-pin-painel .trend-pin-grade {
+    margin-top: 2rem;
+  }
+  .trend-pin-painel .trend-pin-linha {
+    padding-top: 1.25rem;
+    padding-bottom: 1.25rem;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .trend-rise,
   .trend-marquee,

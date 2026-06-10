@@ -1,27 +1,33 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import {
   motion,
   useInView,
   useMotionValue,
+  useMotionValueEvent,
   useReducedMotion,
   useScroll,
   useSpring,
   useTransform,
+  type MotionValue,
 } from "motion/react";
 
 import { Revelar } from "@/components/revelar";
 import { useMediaQuery } from "./use-media-query";
 
 /**
- * Demo viva do score: o número conta de 0 até a nota com física de mola
- * (overshoot sutil), um anel circular preenche em sincronia e os 3 motivos
- * entram em stagger com mini-barras proporcionais à contribuição REAL que
- * cada fator soma no motor. O card entra inclinado em 3D e endireita
- * conforme o scroll — parece o produto rodando, não um print.
+ * Demo viva do score. No desktop a seção tem um PIN curto e a sequência é
+ * DIRIGIDA PELO SCROLL em segmentos contíguos (como nas Camadas): o card
+ * endireita do 3D, a nota conta com mola quando o pin engata e cada motivo
+ * entra com sua barra conforme o dedo avança — rolar para trás rebobina.
+ * Nada toca fora do olho e não há zona morta dentro do pin.
+ *
+ * O pin (altura + sticky) vem de CSS (motion-safe:lg:) para o documento
+ * nascer com a altura certa no SSR. No mobile/reduced-motion não há pin e
+ * a sequência roda por tempo, disparada por viewport.
  */
 
 // Motivo já serializado pelo servidor (vem do motor determinístico real)
@@ -31,13 +37,22 @@ export type MotivoDemo = {
   texto: string;
 };
 
+// Segmentos do pin: endireitar → contar → motivos 1/2/3 (contíguos)
+const SEGMENTO_CARD: [number, number] = [0.02, 0.28];
+const GATILHO_CONTAGEM = 0.14;
+const SEGMENTOS_MOTIVOS: [number, number][] = [
+  [0.3, 0.46],
+  [0.46, 0.62],
+  [0.62, 0.78],
+];
+
 /** Número que conta com mola + anel circular que preenche junto. */
 function NotaAnimada({ score, contar }: { score: number; contar: boolean }) {
   const reduzirMovimento = useReducedMotion();
 
   const alvo = useMotionValue(0);
-  // stiffness/damping baixos = sobe rápido e assenta com leve overshoot
-  const mola = useSpring(alvo, { stiffness: 70, damping: 15 });
+  // mola mais lenta = a contagem é um momento, não um flash (~2s até assentar)
+  const mola = useSpring(alvo, { stiffness: 48, damping: 15 });
   const exibido = useTransform(mola, (v) => Math.round(v));
   const anel = useTransform(mola, (v) => v / 100);
 
@@ -83,29 +98,67 @@ function NotaAnimada({ score, contar }: { score: number; contar: boolean }) {
   );
 }
 
-/** Um motivo com mini-barra proporcional à contribuição no score. */
+/**
+ * Um motivo com mini-barra proporcional à contribuição no score.
+ * Pinado: entrada e barra dirigidas pelo progresso do scroll (rebobina).
+ * Sem pin: entrada por tempo quando o card aparece (mobile).
+ */
 function MotivoItem({
   motivo,
   indice,
   maiorContribuicao,
+  pinado,
+  progresso,
   mostrar,
 }: {
   motivo: MotivoDemo;
   indice: number;
   maiorContribuicao: number;
+  pinado: boolean;
+  progresso: MotionValue<number>;
   mostrar: boolean;
 }) {
   const reduzirMovimento = useReducedMotion();
   const largura = Math.max(0.12, motivo.contribuicao / maiorContribuicao);
-  const atraso = 0.35 + indice * 0.18;
+  const segmento = SEGMENTOS_MOTIVOS[indice];
+  const atraso = 0.4 + indice * 0.25;
+
+  // Modo scroll (pin): item e barra seguem o dedo
+  const opacityScroll = useTransform(progresso, segmento, [0, 1]);
+  const yScroll = useTransform(progresso, segmento, [18, 0]);
+  const barraScroll = useTransform(
+    progresso,
+    [segmento[0] + 0.05, segmento[1] + 0.05],
+    [0, 1],
+  );
+
+  const propsItem = pinado
+    ? { style: { opacity: opacityScroll, y: yScroll } }
+    : {
+        initial: reduzirMovimento ? false : { opacity: 0, y: 18 },
+        animate: mostrar ? { opacity: 1, y: 0 } : undefined,
+        transition: {
+          duration: 0.6,
+          delay: atraso,
+          ease: [0.32, 0.72, 0, 1] as const,
+        },
+      };
+
+  const propsBarra = pinado
+    ? { style: { scaleX: barraScroll, width: `${largura * 100}%` } }
+    : {
+        style: { width: `${largura * 100}%` },
+        initial: reduzirMovimento ? false : { scaleX: 0 },
+        animate: mostrar ? { scaleX: 1 } : undefined,
+        transition: {
+          duration: 0.9,
+          delay: atraso + 0.15,
+          ease: [0.32, 0.72, 0, 1] as const,
+        },
+      };
 
   return (
-    <motion.li
-      className="flex items-start gap-3.5"
-      initial={reduzirMovimento ? false : { opacity: 0, y: 18 }}
-      animate={mostrar ? { opacity: 1, y: 0 } : undefined}
-      transition={{ duration: 0.6, delay: atraso, ease: [0.32, 0.72, 0, 1] }}
-    >
+    <motion.li className="flex items-start gap-3.5" {...propsItem}>
       <span className="ops-mono mt-0.5 text-sm font-semibold text-accent">
         {String(indice + 1).padStart(2, "0")}
       </span>
@@ -116,14 +169,7 @@ function MotivoItem({
           <span className="h-1 max-w-56 flex-1 overflow-hidden rounded-full bg-muted">
             <motion.span
               className="block h-full origin-left rounded-full bg-accent"
-              style={{ width: `${largura * 100}%` }}
-              initial={reduzirMovimento ? false : { scaleX: 0 }}
-              animate={mostrar ? { scaleX: 1 } : undefined}
-              transition={{
-                duration: 0.9,
-                delay: atraso + 0.15,
-                ease: [0.32, 0.72, 0, 1],
-              }}
+              {...propsBarra}
             />
           </span>
           <span className="ops-mono text-[11px] text-muted-foreground">
@@ -144,20 +190,39 @@ export function ScoreDemo({
   score: number;
   motivos: MotivoDemo[];
 }) {
+  const secaoRef = useRef<HTMLElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
   const reduzirMovimento = useReducedMotion();
+  const desktop = useMediaQuery("(min-width: 1024px)");
   const temHover = useMediaQuery("(hover: hover)");
+  const pinado = desktop && !reduzirMovimento;
 
-  // Dispara contador/barras quando o card entra de fato na viewport
-  const emVista = useInView(cardRef, { once: true, amount: 0.35 });
-
-  // O card chega deitado (rotateX) e endireita conforme o scroll se aproxima
-  const { scrollYProgress } = useScroll({
-    target: cardRef,
-    offset: ["start 95%", "start 40%"],
+  // Progresso do PIN (desktop)
+  const { scrollYProgress: progressoPin } = useScroll({
+    target: secaoRef,
+    offset: ["start start", "end end"],
   });
-  const rotateX = useTransform(scrollYProgress, [0, 1], [12, 0]);
-  const scale = useTransform(scrollYProgress, [0, 1], [0.96, 1]);
+  // Sem pin (mobile): endireita conforme o card cruza a viewport
+  const { scrollYProgress: progressoCard } = useScroll({
+    target: cardRef,
+    offset: ["start 98%", "start 45%"],
+  });
+
+  const rotateXPin = useTransform(progressoPin, SEGMENTO_CARD, [12, 0]);
+  const scalePin = useTransform(progressoPin, SEGMENTO_CARD, [0.96, 1]);
+  const rotateXCard = useTransform(progressoCard, [0, 1], [12, 0]);
+  const scaleCard = useTransform(progressoCard, [0, 1], [0.96, 1]);
+  const rotateX = pinado ? rotateXPin : rotateXCard;
+  const scale = pinado ? scalePin : scaleCard;
+
+  // Gatilho da contagem — pinado: quando o pin engata de fato (o card está
+  // parado diante do olho); mobile: quando o card entra na viewport.
+  const emVista = useInView(cardRef, { once: true, amount: 0.45 });
+  const [contagemPin, setContagemPin] = useState(false);
+  useMotionValueEvent(progressoPin, "change", (v) => {
+    if (v >= GATILHO_CONTAGEM) setContagemPin(true);
+  });
+  const contar = pinado ? contagemPin : emVista;
 
   // Tilt 3D discreto sob o cursor (só em dispositivos com hover real)
   const px = useMotionValue(0.5);
@@ -185,66 +250,81 @@ export function ScoreDemo({
   const maiorContribuicao = Math.max(...motivos.map((m) => m.contribuicao), 1);
 
   return (
-    <section id="score" className="scroll-mt-20 border-b border-border bg-secondary">
-      <div className="mx-auto w-full max-w-4xl px-6 py-24 text-center">
-        <Revelar>
-          <p className="ops-mono text-xs uppercase tracking-[0.28em] text-accent">
-            Score de compra
-          </p>
-          <h2 className="mt-5 text-4xl font-semibold leading-tight tracking-tight text-foreground sm:text-5xl">
-            Uma nota que você explica para qualquer um.
-          </h2>
-        </Revelar>
+    <section
+      id="score"
+      ref={secaoRef}
+      // Pin via CSS: altura certa já no SSR, sem salto na hidratação
+      className="scroll-mt-20 border-b border-border bg-secondary motion-safe:lg:h-[150vh]"
+    >
+      <div className="trend-pin-painel motion-safe:lg:sticky motion-safe:lg:top-0 motion-safe:lg:flex motion-safe:lg:min-h-screen motion-safe:lg:items-center">
+        <div className="mx-auto w-full max-w-4xl px-6 py-20 text-center motion-safe:lg:py-10">
+          <Revelar className="trend-pin-cabecalho">
+            <p className="ops-mono text-xs uppercase tracking-[0.28em] text-accent">
+              Score de compra
+            </p>
+            <h2 className="mt-5 text-4xl font-semibold leading-tight tracking-tight text-foreground sm:text-5xl">
+              Uma nota que você explica para qualquer um.
+            </h2>
+          </Revelar>
 
-        {/* perspective no pai dá profundidade real ao rotateX do card */}
-        <div style={{ perspective: 1400 }}>
-          <motion.div
-            ref={cardRef}
-            style={reduzirMovimento ? undefined : { rotateX, scale }}
-            className="mt-10"
-          >
+          {/* perspective no pai dá profundidade real ao rotateX do card */}
+          <div style={{ perspective: 1400 }}>
             <motion.div
-              style={reduzirMovimento ? undefined : { rotateX: tiltX, rotateY: tiltY }}
-              onPointerMove={aoMoverCursor}
-              onPointerLeave={aoSairCursor}
-              className="rounded-2xl border border-border bg-background p-8 text-left shadow-sm sm:p-12"
+              ref={cardRef}
+              style={reduzirMovimento ? undefined : { rotateX, scale }}
+              className="mt-10"
             >
-              <div className="flex flex-col items-start justify-between gap-6 border-b border-border pb-6 sm:flex-row sm:items-center">
-                <div>
-                  <p className="ops-mono text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
-                    {titulo}
-                  </p>
-                  <p className="mt-1.5 text-sm text-muted-foreground">
-                    nota para uma loja como a sua
-                  </p>
-                </div>
-                <NotaAnimada score={score} contar={emVista} />
-              </div>
-
-              <p className="ops-mono mt-6 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
-                Por que essa nota
-              </p>
-              <ol className="mt-4 space-y-5">
-                {motivos.map((m, i) => (
-                  <MotivoItem
-                    key={m.fator}
-                    motivo={m}
-                    indice={i}
-                    maiorContribuicao={maiorContribuicao}
-                    mostrar={emVista}
-                  />
-                ))}
-              </ol>
-
-              <Link
-                href="/app/decidir"
-                className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-accent transition-colors hover:text-foreground"
+              <motion.div
+                style={
+                  reduzirMovimento
+                    ? undefined
+                    : // transformPerspective: o tilt é neto do pai com
+                      // perspective — sem isso a rotação sai "achatada"
+                      { rotateX: tiltX, rotateY: tiltY, transformPerspective: 1400 }
+                }
+                onPointerMove={aoMoverCursor}
+                onPointerLeave={aoSairCursor}
+                className="rounded-2xl border border-border bg-background p-8 text-left shadow-sm sm:p-12"
               >
-                Ver a tela de decisão
-                <ArrowRight className="size-4" aria-hidden />
-              </Link>
+                <div className="flex flex-col items-start justify-between gap-6 border-b border-border pb-6 sm:flex-row sm:items-center">
+                  <div>
+                    <p className="ops-mono text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
+                      {titulo}
+                    </p>
+                    <p className="mt-1.5 text-sm text-muted-foreground">
+                      nota para uma loja como a sua
+                    </p>
+                  </div>
+                  <NotaAnimada score={score} contar={contar} />
+                </div>
+
+                <p className="ops-mono mt-6 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
+                  Por que essa nota
+                </p>
+                <ol className="mt-4 space-y-5">
+                  {motivos.map((m, i) => (
+                    <MotivoItem
+                      key={m.fator}
+                      motivo={m}
+                      indice={i}
+                      maiorContribuicao={maiorContribuicao}
+                      pinado={pinado}
+                      progresso={progressoPin}
+                      mostrar={emVista}
+                    />
+                  ))}
+                </ol>
+
+                <Link
+                  href="/app/decidir"
+                  className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-accent transition-colors hover:text-foreground"
+                >
+                  Ver a tela de decisão
+                  <ArrowRight className="size-4" aria-hidden />
+                </Link>
+              </motion.div>
             </motion.div>
-          </motion.div>
+          </div>
         </div>
       </div>
     </section>

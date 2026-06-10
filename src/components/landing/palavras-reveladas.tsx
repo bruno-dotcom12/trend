@@ -37,7 +37,7 @@ export function PalavrasReveladas({
             className="inline-block overflow-hidden pb-[0.14em] -mb-[0.14em] align-bottom"
           >
             <motion.span
-              className="inline-block will-change-transform"
+              className="inline-block"
               initial={{ y: "115%" }}
               animate={emVista ? { y: "0%" } : undefined}
               transition={{

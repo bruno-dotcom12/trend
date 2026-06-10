@@ -14,9 +14,13 @@ import {
 const EASE_SUAVE = [0.32, 0.72, 0, 1] as const;
 
 /**
- * Navbar da landing: transparente sobre o topo, ganha vidro (blur + hairline)
- * depois de rolar, esconde ao descer e reaparece ao subir. Sob
- * prefers-reduced-motion ela apenas fica fixa com fundo, sem esconder.
+ * Navbar da landing: transparente sobre o topo, ganha vidro ao rolar,
+ * some ao descer e reaparece ao subir.
+ *
+ * Esconde com FADE (opacity), não slide: mover um elemento com
+ * backdrop-blur re-amostra o desfoque a cada frame e engasga justamente
+ * na inversão do scroll. Opacity é composta na GPU. Tab em link da navbar
+ * escondida a traz de volta (onFocusCapture).
  */
 export function Navbar() {
   const { scrollY } = useScroll();
@@ -33,22 +37,28 @@ export function Navbar() {
     setEscondida(y > anterior && y > 200);
   });
 
+  const oculta = escondida && !reduzirMovimento;
+
   return (
     <motion.header
       className="fixed inset-x-0 top-0 z-40"
       initial={false}
-      animate={{ y: escondida && !reduzirMovimento ? "-100%" : "0%" }}
-      transition={{ duration: 0.55, ease: EASE_SUAVE }}
+      animate={{ opacity: oculta ? 0 : 1 }}
+      transition={{ duration: 0.3, ease: EASE_SUAVE }}
+      style={{ pointerEvents: oculta ? "none" : "auto" }}
+      onFocusCapture={() => setEscondida(false)}
     >
-      <div
-        className={[
-          "transition-[background-color,border-color,backdrop-filter] duration-500",
-          rolada
-            ? "border-b border-border/80 bg-white/75 backdrop-blur-xl"
-            : "border-b border-transparent bg-transparent",
-        ].join(" ")}
-      >
-        <div className="mx-auto flex h-[72px] w-full max-w-7xl items-center justify-between px-6">
+      <div className="relative">
+        {/* Vidro sempre montado e PARADO; só a opacidade transiciona.
+            blur-md é o suficiente sobre fundo branco e custa bem menos. */}
+        <div
+          className={[
+            "absolute inset-0 border-b border-border/80 bg-white/80 backdrop-blur-md transition-opacity duration-300",
+            rolada ? "opacity-100" : "opacity-0",
+          ].join(" ")}
+          aria-hidden
+        />
+        <div className="relative mx-auto flex h-[72px] w-full max-w-7xl items-center justify-between px-6">
           <Link
             href="/"
             className="ops-mono text-sm font-semibold uppercase tracking-[0.34em] text-foreground"

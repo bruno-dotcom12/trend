@@ -55,10 +55,12 @@ function ListaDeslizante({
           className="flex gap-3"
           initial={reduzirMovimento ? false : { opacity: 0, x: deslocamento }}
           whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true, amount: 0.6 }}
+          // amount baixo: dispara assim que o item aparece — com 0.6 a
+          // animação começava quando o leitor já tinha passado do bloco
+          viewport={{ once: true, amount: 0.3 }}
           transition={{
-            duration: 0.65,
-            delay: 0.15 + i * 0.12,
+            duration: 0.55,
+            delay: 0.1 + i * 0.1,
             ease: [0.32, 0.72, 0, 1],
           }}
         >
@@ -106,8 +108,10 @@ export function Comparativo() {
             aria-hidden
           />
 
-          {/* Sem método: enfraquecido — dessaturado e levemente apagado */}
-          <Revelar className="rounded-2xl border border-border bg-background p-8 opacity-90 grayscale-[0.45] sm:p-10">
+          {/* Sem método: enfraquecido — levemente apagado (sem filter: um
+              grayscale no ancestral re-rasteriza o subtree a cada frame do
+              stagger dos itens; as cores já são mudas por token) */}
+          <Revelar className="rounded-2xl border border-border bg-background p-8 opacity-85 sm:p-10">
             <p className="ops-mono text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
               Sem método
             </p>
@@ -119,10 +123,17 @@ export function Comparativo() {
             />
           </Revelar>
 
-          {/* Com o TREND: dominante — glow ciano constante + salto no hover */}
+          {/* Com o TREND: dominante — glow ciano constante + salto no hover.
+              O glow vive num span próprio com sombra FIXA e só a opacidade
+              transiciona (transition-all interpolando box-shadow = repaint
+              de 500ms em área grande a cada hover) */}
           <Revelar delay={0.1} className="h-full">
-            <div className="group relative h-full overflow-hidden rounded-2xl border border-border bg-card p-8 shadow-[0_0_80px_-24px] shadow-accent/30 transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-2 hover:border-accent/60 hover:shadow-2xl hover:shadow-accent/15 sm:p-10">
-              <span className="absolute left-0 top-0 h-full w-1 bg-accent" aria-hidden />
+            <div className="group relative h-full rounded-2xl border border-border bg-card p-8 transition-[transform,border-color] duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-2 hover:border-accent/60 sm:p-10">
+              <span
+                className="pointer-events-none absolute -inset-px rounded-2xl shadow-[0_0_80px_-24px] shadow-accent/40 transition-opacity duration-500 opacity-70 group-hover:opacity-100"
+                aria-hidden
+              />
+              <span className="absolute left-0 top-0 h-full w-1 rounded-l-2xl bg-accent" aria-hidden />
               <p className="ops-mono text-[11px] uppercase tracking-[0.22em] text-accent">
                 Com o TREND
               </p>

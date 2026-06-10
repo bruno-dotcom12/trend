@@ -2,9 +2,13 @@
 
 /**
  * Faixa "Em alta": duas linhas de marquee em direções opostas (ritmo
- * editorial). A linha pausa no hover para leitura; a peça sob o cursor
- * escala de leve e o score revela sua cor semântica:
+ * editorial). A linha pausa no hover/focus para leitura; a peça sob o
+ * cursor escala de leve e o score revela sua cor semântica:
  * verde (>75) · âmbar (50–75) · neutro (<50).
+ *
+ * Acessibilidade: o marquee inteiro é decorativo (aria-hidden) — a cópia
+ * de loop duplicaria cada item para leitores de tela. O conteúdo real é
+ * exposto uma única vez numa lista sr-only.
  */
 
 export type ItemTicker = {
@@ -33,7 +37,7 @@ function LinhaTicker({
   return (
     <div
       className={[
-        "flex w-max gap-10 whitespace-nowrap hover:[animation-play-state:paused]",
+        "flex w-max gap-10 whitespace-nowrap hover:[animation-play-state:paused] focus-within:[animation-play-state:paused]",
         reversa ? "trend-marquee-reversa" : "trend-marquee",
       ].join(" ")}
     >
@@ -63,16 +67,28 @@ export function Ticker({ itens }: { itens: ItemTicker[] }) {
   const linhaB = itens.filter((_, i) => i % 2 === 1);
 
   return (
-    <div className="relative flex items-center gap-4 overflow-hidden border-y border-border bg-secondary py-3">
-      <span className="z-10 hidden shrink-0 items-center gap-2 self-stretch bg-secondary pl-6 pr-4 sm:flex">
-        <span className="size-1.5 rounded-full bg-accent" aria-hidden />
-        <span className="ops-mono text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
-          Em alta
+    <div className="relative border-y border-border bg-secondary py-3">
+      {/* Conteúdo real, uma única vez, para leitores de tela */}
+      <ul className="sr-only">
+        {itens.map((s) => (
+          <li key={s.id}>
+            {s.titulo} — força {s.forca} de 100
+          </li>
+        ))}
+      </ul>
+
+      {/* Marquee decorativo */}
+      <div className="flex items-center gap-4 overflow-hidden" aria-hidden>
+        <span className="z-10 hidden shrink-0 items-center gap-2 self-stretch bg-secondary pl-6 pr-4 sm:flex">
+          <span className="size-1.5 rounded-full bg-accent" />
+          <span className="ops-mono text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
+            Em alta
+          </span>
         </span>
-      </span>
-      <div className="flex min-w-0 flex-col gap-2.5">
-        <LinhaTicker itens={linhaA} />
-        <LinhaTicker itens={linhaB} reversa />
+        <div className="flex min-w-0 flex-col gap-2.5">
+          <LinhaTicker itens={linhaA} />
+          <LinhaTicker itens={linhaB} reversa />
+        </div>
       </div>
     </div>
   );

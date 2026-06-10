@@ -7,7 +7,6 @@ import { Camadas } from "@/components/landing/camadas";
 import { Comparativo } from "@/components/landing/comparativo";
 import { CtaFinal } from "@/components/landing/cta-final";
 import { HeroFoto, HeroTexto } from "@/components/landing/hero";
-import { HeroVideo } from "@/components/landing/hero-video";
 import { ScoreDemo } from "@/components/landing/score-demo";
 import { Ticker } from "@/components/landing/ticker";
 
@@ -43,15 +42,6 @@ export default function LandingPage() {
           <HeroFoto />
         </div>
       </section>
-
-      {/* Faixa de vídeo: loop mudo de bastidor de boutique
-          (Pexels #8195083, licença livre — pexels.com/video/8195083) */}
-      <HeroVideo
-        mp4="/landing/bastidor.mp4"
-        webm="/landing/bastidor.webm"
-        poster="/landing/bastidor-poster.jpg"
-        fotoPlaceholder="/landing/bastidor-poster.jpg"
-      />
 
       {/* ===================== FAIXA DE SINAIS (terminal claro) ===================== */}
       <Ticker

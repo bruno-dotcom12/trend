@@ -19,8 +19,11 @@ import { useMediaQuery } from "./use-media-query";
  * Seção "Três camadas" em scroll-telling: no desktop a seção fixa (sticky)
  * e as camadas entram conforme o scroll avança, ligadas por um conector SVG
  * que se desenha (pathLength). A Execução — o diferencial — ganha escala e
- * glow ao chegar nela. No mobile e sob reduced-motion não há pin: vira a
- * sequência de reveals simples.
+ * glow ao chegar nela. No mobile e sob reduced-motion não há pin.
+ *
+ * O pin (altura + sticky) é aplicado por CSS (motion-safe:lg:) para o
+ * documento nascer com a altura certa no SSR — sem salto de layout na
+ * hidratação. O JS só decide COMO cada linha anima (scroll vs reveal).
  */
 
 type Camada = {
@@ -64,11 +67,13 @@ const CAMADAS: Camada[] = [
   },
 ];
 
-// Janela de progresso do pin em que cada camada entra (entrada → estável)
+// Janela de progresso do pin em que cada camada entra (entrada → estável).
+// Segmentos contíguos: SEMPRE há algo se movendo na tela — zona morta no
+// meio do pin dá sensação de scroll travado.
 const SEGMENTOS: [number, number][] = [
-  [0.05, 0.2],
-  [0.32, 0.47],
-  [0.59, 0.74],
+  [0.04, 0.3],
+  [0.32, 0.58],
+  [0.6, 0.86],
 ];
 
 /** Ícone com micro-animação própria quando a camada está ativa. */
@@ -125,7 +130,7 @@ function ConteudoCamada({ camada, ativa }: { camada: Camada; ativa: boolean }) {
     <div
       className={[
         // px-6 em todas as linhas mantém os ícones na mesma vertical do conector
-        "grid grid-cols-[auto_1fr] items-center gap-6 border-t border-border px-6 py-8 md:grid-cols-[auto_auto_1fr_auto] md:gap-8",
+        "trend-pin-linha grid grid-cols-[auto_1fr] items-center gap-6 border-t border-border px-6 py-8 md:grid-cols-[auto_auto_1fr_auto] md:gap-8",
         camada.destaque ? "rounded-2xl border-accent/30 bg-accent/[0.04]" : "",
       ].join(" ")}
     >
@@ -163,39 +168,58 @@ function ConteudoCamada({ camada, ativa }: { camada: Camada; ativa: boolean }) {
   );
 }
 
-/** Versão pinned de uma camada: entra (y + opacity) no seu segmento de scroll. */
-function CamadaPinada({
+/**
+ * Uma linha de camada: DOM idêntico nos dois modos; muda só COMO anima —
+ * pinado dirige por scroll (style com MotionValues), senão reveal simples.
+ */
+function LinhaCamada({
   camada,
   indice,
   progresso,
+  pinado,
   ativa,
 }: {
   camada: Camada;
   indice: number;
   progresso: MotionValue<number>;
+  pinado: boolean;
   ativa: boolean;
 }) {
+  const reduzirMovimento = useReducedMotion();
   const segmento = SEGMENTOS[indice];
+
   const opacity = useTransform(progresso, segmento, [0, 1]);
   const y = useTransform(progresso, segmento, [56, 0]);
-
   // Só a execução cresce e ganha glow no fim do pin (arrays constantes nas outras)
   const escala = useTransform(
     progresso,
-    [0.74, 0.9],
+    [0.86, 0.97],
     camada.destaque ? [1, 1.025] : [1, 1],
   );
   const glow = useTransform(
     progresso,
-    [0.74, 0.9],
+    [0.86, 0.97],
     camada.destaque ? [0, 1] : [0, 0],
   );
 
+  const propsAnimacao = pinado
+    ? { style: { opacity, y, scale: escala } }
+    : {
+        initial: reduzirMovimento ? false : { opacity: 0, y: 28 },
+        whileInView: { opacity: 1, y: 0 },
+        viewport: { once: true, amount: 0.2 },
+        transition: {
+          duration: 0.6,
+          delay: indice * 0.08,
+          ease: [0.32, 0.72, 0, 1] as const,
+        },
+      };
+
   return (
-    <motion.div style={{ opacity, y, scale: escala }} className="relative">
+    <motion.div className="relative" {...propsAnimacao}>
       {/* Halo ciano da execução — box-shadow fixo, só a opacidade anima */}
       <motion.span
-        style={{ opacity: glow }}
+        style={{ opacity: pinado ? glow : 0 }}
         className="pointer-events-none absolute -inset-px rounded-2xl shadow-[0_0_70px_-10px] shadow-accent/40"
         aria-hidden
       />
@@ -216,43 +240,41 @@ export function Camadas() {
   });
 
   // Conector vertical que se desenha ligando as três camadas
-  const linha = useTransform(scrollYProgress, [0.08, 0.82], [0, 1]);
+  const linha = useTransform(scrollYProgress, [0.06, 0.86], [0, 1]);
 
-  // Camada "ativa" (micro-animações dos ícones) muda em marcos do progresso
+  // Camada "ativa" (micro-gestos dos ícones): dispara no FIM do segmento de
+  // entrada — no início a linha ainda está com opacity 0 e o gesto tocaria
+  // invisível. No modo sem pin, todas ficam ativas.
   const [ativa, setAtiva] = useState(-1);
   useMotionValueEvent(scrollYProgress, "change", (v) => {
-    setAtiva(v >= 0.59 ? 2 : v >= 0.32 ? 1 : v >= 0.05 ? 0 : -1);
+    setAtiva(v >= 0.86 ? 2 : v >= 0.58 ? 1 : v >= 0.3 ? 0 : -1);
   });
-
-  const cabecalho = (
-    <Revelar className="max-w-2xl">
-      <h2 className="text-4xl font-semibold leading-tight tracking-tight text-foreground sm:text-5xl">
-        Três camadas. Uma decisão de compra.
-      </h2>
-      <p className="mt-5 text-lg leading-relaxed text-muted-foreground">
-        Cada camada tira um pouco do risco da compra. A execução é a que muda o
-        jogo: é onde o seu capital para de ficar parado em estoque que não gira.
-      </p>
-    </Revelar>
-  );
 
   return (
     <section
       id="sistema"
       ref={containerRef}
-      className={[
-        "relative scroll-mt-20 border-b border-border",
-        pinado ? "h-[300vh]" : "",
-      ].join(" ")}
+      // Pin via CSS: a altura nasce certa no SSR, sem salto na hidratação.
+      // 260vh: pin presente mas curto — 300vh segurava demais a página.
+      className="relative scroll-mt-20 border-b border-border motion-safe:lg:h-[260vh]"
     >
-      {pinado ? (
-        /* ---- Desktop: painel sticky, camadas entram com o scroll ---- */
-        <div className="sticky top-0 flex h-screen items-center overflow-hidden">
-          <div className="mx-auto w-full max-w-7xl px-6">
-            {cabecalho}
-            <div className="relative mt-14">
-              {/* Conector SVG: desenha de cima a baixo pelo centro dos ícones */}
-              {/* left-12 = px-6 da linha + metade do ícone de 48px */}
+      <div className="trend-pin-painel motion-safe:lg:sticky motion-safe:lg:top-0 motion-safe:lg:flex motion-safe:lg:h-screen motion-safe:lg:items-center motion-safe:lg:overflow-hidden">
+        <div className="mx-auto w-full max-w-7xl px-6 py-24 motion-safe:lg:py-0">
+          <Revelar className="trend-pin-cabecalho max-w-2xl">
+            <h2 className="text-4xl font-semibold leading-tight tracking-tight text-foreground sm:text-5xl">
+              Três camadas. Uma decisão de compra.
+            </h2>
+            <p className="mt-5 text-lg leading-relaxed text-muted-foreground">
+              Cada camada tira um pouco do risco da compra. A execução é a que
+              muda o jogo: é onde o seu capital para de ficar parado em estoque
+              que não gira.
+            </p>
+          </Revelar>
+
+          <div className="trend-pin-grade relative mt-16 motion-safe:lg:mt-14">
+            {/* Conector SVG: só existe no modo pinado (desktop + motion).
+                left-12 = px-6 da linha + metade do ícone de 48px */}
+            {pinado && (
               <svg
                 className="absolute left-12 top-0 h-full w-0.5 -translate-x-1/2"
                 viewBox="0 0 2 100"
@@ -268,31 +290,20 @@ export function Camadas() {
                   style={{ pathLength: linha }}
                 />
               </svg>
-              {CAMADAS.map((c, i) => (
-                <CamadaPinada
-                  key={c.titulo}
-                  camada={c}
-                  indice={i}
-                  progresso={scrollYProgress}
-                  ativa={ativa === i}
-                />
-              ))}
-            </div>
-          </div>
-        </div>
-      ) : (
-        /* ---- Mobile / reduced-motion: sem pin, reveals simples ---- */
-        <div className="mx-auto w-full max-w-7xl px-6 py-24">
-          {cabecalho}
-          <div className="mt-16">
+            )}
             {CAMADAS.map((c, i) => (
-              <Revelar key={c.titulo} delay={i * 0.08}>
-                <ConteudoCamada camada={c} ativa />
-              </Revelar>
+              <LinhaCamada
+                key={c.titulo}
+                camada={c}
+                indice={i}
+                progresso={scrollYProgress}
+                pinado={pinado}
+                ativa={pinado ? ativa === i : true}
+              />
             ))}
           </div>
         </div>
-      )}
+      </div>
     </section>
   );
 }

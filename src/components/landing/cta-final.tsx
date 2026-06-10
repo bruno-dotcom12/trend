@@ -1,24 +1,71 @@
 "use client";
 
+import { useRef } from "react";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import { motion, useReducedMotion } from "motion/react";
+import { motion, useInView, useReducedMotion } from "motion/react";
 
 import { BotaoMagnetico } from "./botao-magnetico";
 import { PalavrasReveladas } from "./palavras-reveladas";
+import { useMediaQuery } from "./use-media-query";
 
 /**
- * CTA final: fundo com gradiente ciano girando devagar (CSS puro, transform
- * composto — barato), headline com reveal por palavra e botão magnético.
+ * CTA final: vídeo ambiente de cetim branco ondulando (Pexels #7946210,
+ * licença livre) sob um overlay claro — movimento sentido, não assistido —
+ * + headline com reveal por palavra e botão magnético.
+ *
+ * O vídeo só monta no desktop, perto da viewport e sem reduced-motion;
+ * nos demais casos fica o fundo com o gradiente girando (CSS) de antes.
  */
 export function CtaFinal() {
+  const ref = useRef<HTMLElement>(null);
   const reduzirMovimento = useReducedMotion();
+  const desktop = useMediaQuery("(min-width: 1024px)");
+  const perto = useInView(ref, { margin: "400px 0px", once: true });
+  // Sem `once`: pausa o gradiente (e o vídeo segue só quando visível)
+  const visivel = useInView(ref);
+
+  const comVideo = desktop && !reduzirMovimento && perto;
 
   return (
-    <section className="relative overflow-hidden border-b border-border bg-secondary">
-      {/* Gradiente ambiente: camada maior que a seção girando em loop lento */}
+    <section
+      ref={ref}
+      className="relative overflow-hidden border-b border-border bg-secondary"
+    >
+      {/* Camada 1 — vídeo ambiente (cetim em câmera lenta, mudo, loop) */}
+      {comVideo && (
+        <video
+          className="absolute inset-0 size-full object-cover"
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="none"
+          poster="/landing/cta-tecido-poster.jpg"
+          aria-hidden
+        >
+          <source src="/landing/cta-tecido.webm" type="video/webm" />
+          <source src="/landing/cta-tecido.mp4" type="video/mp4" />
+        </video>
+      )}
+
+      {/* Camada 2 — overlay claro: o movimento vira textura, o texto mantém AA */}
       <div
-        className="trend-cta-gradiente pointer-events-none absolute -inset-[45%]"
+        className={[
+          "absolute inset-0",
+          comVideo ? "bg-white/80" : "",
+        ].join(" ")}
+        aria-hidden
+      />
+
+      {/* Camada 3 — gradiente ciano girando devagar (CSS, só transform).
+          Pausa quando a seção sai da viewport: rotação infinita em layer
+          grande não precisa tickar o compositor a sessão inteira. */}
+      <div
+        className={[
+          "trend-cta-gradiente pointer-events-none absolute -inset-[45%]",
+          visivel ? "" : "[animation-play-state:paused]",
+        ].join(" ")}
         aria-hidden
       />
 

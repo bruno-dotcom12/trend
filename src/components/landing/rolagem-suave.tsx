@@ -16,7 +16,9 @@ export function RolagemSuave({ children }: { children: ReactNode }) {
     const lenis = new Lenis({
       autoRaf: true,
       anchors: true,
-      lerp: 0.1, // inércia discreta — editorial, não "patinando"
+      // 0.14 responde rápido à inversão de sentido (0.1 dava sensação de
+      // "patinar" ao rolar e voltar) mantendo a inércia editorial
+      lerp: 0.14,
     });
 
     return () => lenis.destroy();
