@@ -44,8 +44,14 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Faixa de vídeo (loop mudo de bastidor) — placeholder até existir o asset */}
-      <HeroVideo />
+      {/* Faixa de vídeo: loop mudo de bastidor de boutique
+          (Pexels #8195083, licença livre — pexels.com/video/8195083) */}
+      <HeroVideo
+        mp4="/landing/bastidor.mp4"
+        webm="/landing/bastidor.webm"
+        poster="/landing/bastidor-poster.jpg"
+        fotoPlaceholder="/landing/bastidor-poster.jpg"
+      />
 
       {/* ===================== FAIXA DE SINAIS (terminal claro) ===================== */}
       <Ticker

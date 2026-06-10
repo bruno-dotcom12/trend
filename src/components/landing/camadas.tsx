@@ -33,6 +33,7 @@ type Camada = {
 };
 
 // As três camadas do sistema. A execução é o diferencial, por isso ganha destaque.
+// Fotos editoriais: Pexels (licença livre) #7794365, #9594693 e #5424922.
 const CAMADAS: Camada[] = [
   {
     icone: Radar,
@@ -41,7 +42,7 @@ const CAMADAS: Camada[] = [
       "Público da sua loja, redes e fornecedores bem pontuados num só painel. Você vê a tendência se formar antes de o lote virar aposta.",
     rotulo: "sinal",
     destaque: false,
-    foto: "/pecas/vestido-floral-curto.jpg",
+    foto: "/landing/camada-sinal.jpg",
   },
   {
     icone: Scale,
@@ -50,7 +51,7 @@ const CAMADAS: Camada[] = [
       "Cada peça recebe um score de 0 a 100, os 3 motivos por trás dele e a quantidade calculada para o tamanho do seu público e do seu caixa.",
     rotulo: "decisão",
     destaque: false,
-    foto: "/pecas/saia-midi-plissada.jpg",
+    foto: "/landing/camada-decisao.jpg",
   },
   {
     icone: ShieldCheck,
@@ -59,7 +60,7 @@ const CAMADAS: Camada[] = [
       "O diferencial. Pré-venda valida a demanda antes de você pagar o lote, e a compra coletiva fura o lote mínimo junto com outras lojas.",
     rotulo: "execução",
     destaque: true,
-    foto: "/pecas/moletom-oversized.jpg",
+    foto: "/landing/camada-execucao.jpg",
   },
 ];
 
