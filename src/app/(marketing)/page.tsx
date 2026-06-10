@@ -10,6 +10,7 @@ import { Revelar } from "@/components/revelar";
 import { Camadas } from "@/components/landing/camadas";
 import { HeroFoto, HeroTexto } from "@/components/landing/hero";
 import { HeroVideo } from "@/components/landing/hero-video";
+import { ScoreDemo } from "@/components/landing/score-demo";
 import { Ticker } from "@/components/landing/ticker";
 
 // Loja de demonstração para mostrar o score JÁ personalizado na landing.
@@ -56,67 +57,16 @@ export default function LandingPage() {
       {/* ===================== SISTEMA (scroll-telling pinado) ===================== */}
       <Camadas />
 
-      {/* ===================== SCORE (readout central) ===================== */}
-      <section id="score" className="scroll-mt-20 border-b border-border bg-secondary">
-        <div className="mx-auto w-full max-w-4xl px-6 py-14 text-center">
-          <Revelar>
-            <p className="ops-mono text-xs uppercase tracking-[0.28em] text-accent">
-              Score de compra
-            </p>
-            <h2 className="mt-5 text-4xl font-semibold leading-tight tracking-tight text-foreground sm:text-5xl">
-              Uma nota que você explica para qualquer um.
-            </h2>
-          </Revelar>
-
-          {/* Readout real: nota e 3 motivos vêm do mesmo motor que roda no produto */}
-          <Revelar delay={0.12}>
-            <div className="mt-10 rounded-2xl border border-border bg-background p-8 text-left shadow-sm sm:p-12">
-              <div className="flex items-center justify-between gap-5 border-b border-border pb-6">
-                <div>
-                  <p className="ops-mono text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
-                    {PECA_DEMO.titulo}
-                  </p>
-                  <p className="mt-1.5 text-sm text-muted-foreground">
-                    nota para uma loja como a sua
-                  </p>
-                </div>
-                <div className="flex items-baseline gap-1.5">
-                  <span className="ops-mono text-5xl font-semibold leading-none text-accent">
-                    {SCORE_DEMO.score}
-                  </span>
-                  <span className="ops-mono text-sm text-muted-foreground">
-                    /100
-                  </span>
-                </div>
-              </div>
-
-              <p className="ops-mono mt-6 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
-                Por que essa nota
-              </p>
-              <ol className="mt-4 space-y-4">
-                {SCORE_DEMO.motivos.map((m, i) => (
-                  <li key={m.fator} className="flex items-start gap-3.5">
-                    <span className="ops-mono mt-0.5 text-sm font-semibold text-accent">
-                      {String(i + 1).padStart(2, "0")}
-                    </span>
-                    <p className="leading-relaxed text-foreground/85">
-                      {m.texto}
-                    </p>
-                  </li>
-                ))}
-              </ol>
-
-              <Link
-                href="/app/decidir"
-                className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-accent transition-colors hover:text-foreground"
-              >
-                Ver a tela de decisão
-                <ArrowRight className="size-4" aria-hidden />
-              </Link>
-            </div>
-          </Revelar>
-        </div>
-      </section>
+      {/* ===================== SCORE (demo viva do motor real) ===================== */}
+      <ScoreDemo
+        titulo={PECA_DEMO.titulo}
+        score={SCORE_DEMO.score}
+        motivos={SCORE_DEMO.motivos.map((m) => ({
+          fator: m.fator,
+          contribuicao: m.contribuicao,
+          texto: m.texto,
+        }))}
+      />
 
       {/* ===================== COMPARAÇÃO (dois lados) ===================== */}
       <section className="border-b border-border">
