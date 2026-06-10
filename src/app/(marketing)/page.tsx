@@ -16,6 +16,7 @@ import type { Loja } from "@/lib/loja/tipos";
 import { Revelar } from "@/components/revelar";
 import { HeroFoto, HeroTexto } from "@/components/landing/hero";
 import { HeroVideo } from "@/components/landing/hero-video";
+import { Ticker } from "@/components/landing/ticker";
 
 // Loja de demonstração para mostrar o score JÁ personalizado na landing.
 const LOJA_DEMO: Loja = {
@@ -64,7 +65,6 @@ const CAMADAS = [
 
 export default function LandingPage() {
   const sinais = listarSinais();
-  const ticker = [...sinais, ...sinais]; // duplicado p/ marquee contínuo
 
   return (
     <>
@@ -83,27 +83,9 @@ export default function LandingPage() {
       <HeroVideo />
 
       {/* ===================== FAIXA DE SINAIS (terminal claro) ===================== */}
-      <div className="relative flex items-center gap-4 overflow-hidden border-y border-border bg-secondary py-3">
-        <span className="z-10 hidden shrink-0 items-center gap-2 bg-secondary pl-6 pr-4 sm:flex">
-          <span className="size-1.5 rounded-full bg-accent" aria-hidden />
-          <span className="ops-mono text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
-            Em alta
-          </span>
-        </span>
-        <div className="trend-marquee flex w-max gap-10 whitespace-nowrap">
-          {ticker.map((s, i) => (
-            <span
-              key={`${s.id}-${i}`}
-              className="flex items-center gap-2.5 text-sm text-foreground/75"
-            >
-              {s.titulo}
-              <span className="ops-mono text-xs font-semibold text-accent">
-                {String(s.forca).padStart(2, "0")}
-              </span>
-            </span>
-          ))}
-        </div>
-      </div>
+      <Ticker
+        itens={sinais.map((s) => ({ id: s.id, titulo: s.titulo, forca: s.forca }))}
+      />
 
       {/* ===================== SISTEMA (linhas indexadas) ===================== */}
       <section id="sistema" className="scroll-mt-20 border-b border-border">

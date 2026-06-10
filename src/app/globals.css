@@ -242,6 +242,12 @@
   animation: trend-marquee 80s linear infinite;
 }
 
+/* Segunda linha do ticker: sentido oposto e duração levemente diferente
+   para as linhas nunca "baterem" em sincronia */
+.trend-marquee-reversa {
+  animation: trend-marquee 64s linear infinite reverse;
+}
+
 @keyframes trend-grow {
   from {
     width: 0;
@@ -254,6 +260,7 @@
 @media (prefers-reduced-motion: reduce) {
   .trend-rise,
   .trend-marquee,
+  .trend-marquee-reversa,
   .trend-grow {
     animation: none;
   }
