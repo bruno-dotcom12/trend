@@ -1,12 +1,5 @@
 import Link from "next/link";
-import {
-  ArrowRight,
-  Check,
-  Radar,
-  Scale,
-  ShieldCheck,
-  X,
-} from "lucide-react";
+import { ArrowRight, Check, X } from "lucide-react";
 
 import { calcularScore } from "@/lib/engine";
 import { listarPecas } from "@/lib/pecas/fonte";
@@ -14,6 +7,7 @@ import { montarEntradaScore } from "@/lib/pecas/score";
 import { listarSinais } from "@/lib/sinais/fonte";
 import type { Loja } from "@/lib/loja/tipos";
 import { Revelar } from "@/components/revelar";
+import { Camadas } from "@/components/landing/camadas";
 import { HeroFoto, HeroTexto } from "@/components/landing/hero";
 import { HeroVideo } from "@/components/landing/hero-video";
 import { Ticker } from "@/components/landing/ticker";
@@ -34,34 +28,6 @@ const LOJA_DEMO: Loja = {
 const PECA_DEMO =
   listarPecas().find((p) => p.id === "saia-midi-plissada") ?? listarPecas()[0];
 const SCORE_DEMO = calcularScore(montarEntradaScore(PECA_DEMO, LOJA_DEMO));
-
-// As três camadas do sistema. A execução é o diferencial, por isso ganha destaque.
-const CAMADAS = [
-  {
-    icone: Radar,
-    titulo: "Detectar o sinal",
-    texto:
-      "Público da sua loja, redes e fornecedores bem pontuados num só painel. Você vê a tendência se formar antes de o lote virar aposta.",
-    rotulo: "sinal",
-    destaque: false,
-  },
-  {
-    icone: Scale,
-    titulo: "Decidir a compra",
-    texto:
-      "Cada peça recebe um score de 0 a 100, os 3 motivos por trás dele e a quantidade calculada para o tamanho do seu público e do seu caixa.",
-    rotulo: "decisão",
-    destaque: false,
-  },
-  {
-    icone: ShieldCheck,
-    titulo: "Executar sem risco",
-    texto:
-      "O diferencial. Pré-venda valida a demanda antes de você pagar o lote, e a compra coletiva fura o lote mínimo junto com outras lojas.",
-    rotulo: "execução",
-    destaque: true,
-  },
-];
 
 export default function LandingPage() {
   const sinais = listarSinais();
@@ -87,66 +53,8 @@ export default function LandingPage() {
         itens={sinais.map((s) => ({ id: s.id, titulo: s.titulo, forca: s.forca }))}
       />
 
-      {/* ===================== SISTEMA (linhas indexadas) ===================== */}
-      <section id="sistema" className="scroll-mt-20 border-b border-border">
-        <div className="mx-auto w-full max-w-7xl px-6 py-24">
-          <Revelar className="max-w-2xl">
-            <h2 className="text-4xl font-semibold leading-tight tracking-tight text-foreground sm:text-5xl">
-              Três camadas. Uma decisão de compra.
-            </h2>
-            <p className="mt-5 text-lg leading-relaxed text-muted-foreground">
-              Cada camada tira um pouco do risco da compra. A execução é a que
-              muda o jogo: é onde o seu capital para de ficar parado em estoque
-              que não gira.
-            </p>
-          </Revelar>
-
-          <div className="mt-16">
-            {CAMADAS.map((c, i) => {
-              const Icone = c.icone;
-              return (
-                <Revelar key={c.titulo} delay={i * 0.08}>
-                  <div
-                    className={[
-                      "grid grid-cols-1 gap-6 border-t border-border py-9 md:grid-cols-[auto_1fr_auto] md:items-center md:gap-10",
-                      c.destaque ? "rounded-2xl border-accent/30 bg-accent/[0.04] px-6" : "",
-                    ].join(" ")}
-                  >
-                    <div
-                      className={[
-                        "flex size-12 items-center justify-center rounded-xl border",
-                        c.destaque
-                          ? "border-accent/40 bg-accent/10 text-accent"
-                          : "border-border text-muted-foreground",
-                      ].join(" ")}
-                    >
-                      <Icone className="size-6" strokeWidth={1.5} aria-hidden />
-                    </div>
-
-                    <div>
-                      <h3 className="text-2xl font-semibold tracking-tight text-foreground">
-                        {c.titulo}
-                      </h3>
-                      <p className="mt-2 max-w-2xl leading-relaxed text-muted-foreground">
-                        {c.texto}
-                      </p>
-                    </div>
-
-                    <span
-                      className={[
-                        "ops-mono w-fit text-[11px] uppercase tracking-[0.22em] md:justify-self-end",
-                        c.destaque ? "text-accent" : "text-muted-foreground/70",
-                      ].join(" ")}
-                    >
-                      {c.rotulo}
-                    </span>
-                  </div>
-                </Revelar>
-              );
-            })}
-          </div>
-        </div>
-      </section>
+      {/* ===================== SISTEMA (scroll-telling pinado) ===================== */}
+      <Camadas />
 
       {/* ===================== SCORE (readout central) ===================== */}
       <section id="score" className="scroll-mt-20 border-b border-border bg-secondary">
