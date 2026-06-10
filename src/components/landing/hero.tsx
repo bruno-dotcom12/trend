@@ -11,55 +11,10 @@ import {
   useTransform,
 } from "motion/react";
 
+import { PalavrasReveladas } from "./palavras-reveladas";
+
 // Curva "massa real" compartilhada pela landing.
 const EASE_SUAVE = [0.32, 0.72, 0, 1] as const;
-
-/**
- * Headline com reveal palavra a palavra: cada palavra sobe de dentro de uma
- * máscara (overflow hidden) em stagger. O texto integral fica em sr-only para
- * leitores de tela; os spans animados são decorativos.
- */
-function PalavrasReveladas({
-  texto,
-  atraso = 0,
-}: {
-  texto: string;
-  atraso?: number;
-}) {
-  const reduzirMovimento = useReducedMotion();
-  const palavras = texto.split(" ");
-
-  if (reduzirMovimento) return <>{texto}</>;
-
-  return (
-    <>
-      <span className="sr-only">{texto}</span>
-      <span aria-hidden>
-        {palavras.map((palavra, i) => (
-          // pb/-mb dão folga para descendentes (p, ç, x) dentro da máscara
-          <span
-            key={`${palavra}-${i}`}
-            className="inline-block overflow-hidden pb-[0.14em] -mb-[0.14em] align-bottom"
-          >
-            <motion.span
-              className="inline-block will-change-transform"
-              initial={{ y: "115%" }}
-              animate={{ y: "0%" }}
-              transition={{
-                duration: 0.8,
-                delay: atraso + i * 0.055,
-                ease: EASE_SUAVE,
-              }}
-            >
-              {palavra}
-              {i < palavras.length - 1 ? " " : ""}
-            </motion.span>
-          </span>
-        ))}
-      </span>
-    </>
-  );
-}
 
 /** Bloco de texto do hero: badge atrasado, headline mascarada, CTAs. */
 export function HeroTexto() {

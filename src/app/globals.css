@@ -257,11 +257,26 @@
   animation: trend-grow 1.4s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
+/* Gradiente ambiente do CTA final: dois focos de cor girando em loop lento.
+   Anima só transform (rotate) — composto na GPU, sem repaint. */
+@keyframes trend-girar {
+  to {
+    transform: rotate(1turn);
+  }
+}
+.trend-cta-gradiente {
+  background:
+    radial-gradient(38% 34% at 28% 30%, color-mix(in oklch, var(--accent) 12%, transparent), transparent 70%),
+    radial-gradient(32% 30% at 72% 68%, color-mix(in oklch, var(--accent) 8%, transparent), transparent 70%);
+  animation: trend-girar 48s linear infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .trend-rise,
   .trend-marquee,
   .trend-marquee-reversa,
-  .trend-grow {
+  .trend-grow,
+  .trend-cta-gradiente {
     animation: none;
   }
 }

@@ -1,14 +1,11 @@
-import Link from "next/link";
-import { ArrowRight } from "lucide-react";
-
 import { calcularScore } from "@/lib/engine";
 import { listarPecas } from "@/lib/pecas/fonte";
 import { montarEntradaScore } from "@/lib/pecas/score";
 import { listarSinais } from "@/lib/sinais/fonte";
 import type { Loja } from "@/lib/loja/tipos";
-import { Revelar } from "@/components/revelar";
 import { Camadas } from "@/components/landing/camadas";
 import { Comparativo } from "@/components/landing/comparativo";
+import { CtaFinal } from "@/components/landing/cta-final";
 import { HeroFoto, HeroTexto } from "@/components/landing/hero";
 import { HeroVideo } from "@/components/landing/hero-video";
 import { ScoreDemo } from "@/components/landing/score-demo";
@@ -73,27 +70,7 @@ export default function LandingPage() {
       <Comparativo />
 
       {/* ===================== CTA FINAL ===================== */}
-      <section className="border-b border-border bg-secondary">
-        <Revelar className="mx-auto w-full max-w-4xl px-6 py-28 text-center">
-          <h2 className="text-4xl font-semibold leading-tight tracking-tight text-foreground sm:text-5xl">
-            Sua próxima compra não precisa ser um palpite.
-          </h2>
-          <p className="mx-auto mt-5 max-w-xl text-lg leading-relaxed text-muted-foreground">
-            Detecte o sinal, leia a nota de cada peça e execute sem arriscar o
-            caixa. Com dados de demonstração, sem cadastro.
-          </p>
-          <Link
-            href="/app/descobrir"
-            className="group mt-10 inline-flex items-center gap-2 rounded-full bg-primary px-8 py-4 text-base font-semibold text-primary-foreground transition-transform hover:-translate-y-0.5"
-          >
-            Acessar plataforma
-            <ArrowRight
-              className="size-5 transition-transform group-hover:translate-x-1"
-              aria-hidden
-            />
-          </Link>
-        </Revelar>
-      </section>
+      <CtaFinal />
 
       {/* ===================== FOOTER ===================== */}
       <footer className="bg-background">
