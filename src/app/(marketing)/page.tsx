@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Image from "next/image";
 import {
   ArrowRight,
   Check,
@@ -15,6 +14,8 @@ import { montarEntradaScore } from "@/lib/pecas/score";
 import { listarSinais } from "@/lib/sinais/fonte";
 import type { Loja } from "@/lib/loja/tipos";
 import { Revelar } from "@/components/revelar";
+import { HeroFoto, HeroTexto } from "@/components/landing/hero";
+import { HeroVideo } from "@/components/landing/hero-video";
 
 // Loja de demonstração para mostrar o score JÁ personalizado na landing.
 const LOJA_DEMO: Loja = {
@@ -70,56 +71,16 @@ export default function LandingPage() {
       {/* ===================== HERO (editorial estilo Kokonut) ===================== */}
       {/* pt-[72px] compensa a navbar fixa (componente landing/navbar) */}
       <section className="relative flex flex-col pt-[72px] lg:min-h-[100dvh]">
-        {/* Editorial: texto arejado à esquerda, foto colorida dominante sangrando à direita */}
+        {/* Editorial: texto arejado à esquerda (reveal palavra a palavra),
+            foto dominante sangrando à direita (Ken Burns + parallax) */}
         <div className="flex flex-1 flex-col lg:flex-row">
-          {/* Coluna de texto — alinhada à sarjeta do container, bem espaçada */}
-          <div className="trend-rise flex flex-col justify-center py-10 pl-6 pr-6 lg:w-[44%] lg:py-16 lg:pl-[calc((100vw-80rem)/2+1.5rem)] lg:pr-12">
-            <p className="ops-mono text-xs uppercase tracking-[0.28em] text-accent">
-              Inteligência de compra · varejo de moda
-            </p>
-            <h1 className="mt-5 text-4xl font-semibold leading-[1.06] tracking-tight text-foreground sm:text-5xl lg:text-[4.25rem]">
-              O sistema operacional da sua próxima compra.
-            </h1>
-            <p className="mt-5 max-w-md text-base leading-relaxed text-muted-foreground sm:text-lg">
-              Detecção de sinal, score de compra explicável e execução sem
-              travar o caixa. Tudo numa só plataforma.
-            </p>
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
-              <Link
-                href="/app/descobrir"
-                className="group inline-flex items-center justify-center gap-2 rounded-full bg-primary px-6 py-3.5 text-sm font-semibold text-primary-foreground transition-transform hover:-translate-y-0.5"
-              >
-                Acessar plataforma
-                <ArrowRight
-                  className="size-4 transition-transform group-hover:translate-x-0.5"
-                  aria-hidden
-                />
-              </Link>
-              <a
-                href="#sistema"
-                className="inline-flex items-center justify-center gap-2 rounded-full border border-border px-6 py-3.5 text-sm font-semibold text-foreground transition-colors hover:border-foreground"
-              >
-                Ver o sistema
-              </a>
-            </div>
-          </div>
-
-          {/* Foto editorial: colorida, nítida, grande, sangrando até a borda direita */}
-          <div className="relative px-6 pb-10 lg:flex-1 lg:px-0 lg:pb-0">
-            <div className="relative aspect-[4/5] max-h-[72vh] w-full overflow-hidden rounded-2xl bg-muted sm:aspect-[16/11] lg:aspect-auto lg:h-full lg:max-h-none lg:rounded-l-3xl lg:rounded-r-none">
-              <Image
-                src="/landing/hero-editorial.jpg"
-                alt="Editorial de moda em cor: dupla de modelos"
-                fill
-                priority
-                quality={95}
-                sizes="(max-width: 1024px) 100vw, 56vw"
-                className="ops-photo object-cover object-[50%_18%]"
-              />
-            </div>
-          </div>
+          <HeroTexto />
+          <HeroFoto />
         </div>
       </section>
+
+      {/* Faixa de vídeo (loop mudo de bastidor) — placeholder até existir o asset */}
+      <HeroVideo />
 
       {/* ===================== FAIXA DE SINAIS (terminal claro) ===================== */}
       <div className="relative flex items-center gap-4 overflow-hidden border-y border-border bg-secondary py-3">
